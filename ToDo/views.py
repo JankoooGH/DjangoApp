@@ -8,3 +8,18 @@ def home(request):
 
 
 #Logika aplikacji do zrobienia
+
+def home_view(request):
+    tasks = Task.objects.all()
+    form = TaskForm()
+
+    if request.method == 'POST':
+        form = TaskForm(request.POST)
+        if form.is_valid():
+            form.save
+            return redirect('home')
+
+    context = {'tasks': tasks, 'form': form}
+    return render(request, 'ToDo/home.html', context)
+
+
