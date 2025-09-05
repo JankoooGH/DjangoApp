@@ -23,3 +23,10 @@ def home_view(request):
     return render(request, 'ToDo/home.html', context)
 
 
+def delete_task(request, task_id):
+    task = get_object_or_404(Task, pk=task_id)
+    if request.method == "POST":
+        task.delete()
+        return redirect('home')
+    return render(request, "ToDo/confirm_delete.html", {"task": task})
+
