@@ -2,7 +2,7 @@ from django.db import models
 
 class Task(models.Model):
     title = models.CharField(max_length=100)
-    complete = models.BooleanField(default=False)
+    completed = models.BooleanField(default=False)
 
 
 

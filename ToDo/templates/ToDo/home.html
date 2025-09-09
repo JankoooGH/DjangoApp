@@ -4,14 +4,28 @@
     <title>ToDo App</title>
 </head>
 <body>
-    <h1>Witaj w aplikacji ToDo 🚀</h1>
-    <p>To jest moja pierwsza strona w Django.</p>
-    <h1>Tu będzie coś więcej</h1>
+    <h1>Moja lista ToDo 🚀</h1>
 
     <form method="POST">
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit">Dodaj</button>
     </form>
+
+    <ul>
+        {% for task in tasks %}
+            <li>
+                {% if task.completed %}
+                    <s>{{ task.title }}</s>
+                {% else %}
+                    {{ task.title }}
+                {% endif %}
+                [<a href="{% url 'toggle_task' task.id %}">✓</a>]
+                [<a href="{% url 'delete_task' task.id %}">X</a>]
+            </li>
+        {% empty %}
+            <li>Brak zadań 🙃</li>
+        {% endfor %}
+    </ul>
 </body>
 </html>

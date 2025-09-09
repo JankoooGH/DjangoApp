@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Potwierdź usunięcie</title>
+</head>
+<body>
+    <h2>Czy na pewno chcesz usunąć zadanie: "{{ task.title }}"?</h2>
+
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit">Tak, usuń</button>
+        <a href="{% url 'home' %}">Anuluj</a>
+    </form>
+</body>
+</html>

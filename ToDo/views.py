@@ -4,19 +4,13 @@ from .forms import TaskForm
 
 
 def home(request):
-    return render(request, 'ToDo/home.html')
-
-
-#Logika aplikacji do zrobienia
-
-def home_view(request):
     tasks = Task.objects.all()
     form = TaskForm()
 
     if request.method == 'POST':
         form = TaskForm(request.POST)
         if form.is_valid():
-            form.save
+            form.save()
             return redirect('home')
 
     context = {'tasks': tasks, 'form': form}
