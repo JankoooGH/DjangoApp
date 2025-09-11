@@ -22,6 +22,7 @@
           {% else %}
             {{ task.title }}
           {% endif %}
+            <span class="badge bg-secondary ms-2">{{ task.get_task_type_display }}</span>
         </div>
 
         <div>
