@@ -27,6 +27,6 @@ def delete_task(request, task_id):
 def toggle_task(request, task_id):
     task = get_object_or_404(Task, pk=task_id)
     if request.method == "POST":
-        task.complete = not task.complete
+        task.completed = not task.completed
         task.save()
     return redirect('home')
