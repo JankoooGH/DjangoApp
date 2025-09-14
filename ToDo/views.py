@@ -28,5 +28,6 @@ def toggle_task(request, task_id):
     task = get_object_or_404(Task, pk=task_id)
     if request.method == "POST":
         task.completed = not task.completed
+        task.count_streak()
         task.save()
     return redirect('home')
