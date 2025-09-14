@@ -1,4 +1,39 @@
 body {
-    background-color: #F2C894
+    background-color: #F2C894;
+    font-family: "Montserrat", sans-serif;
+}
+.mb-4 {
+    text-align: center;
 }
 
+.btn {
+    border-color: #1b1b1b;
+    color: #1b1b1b;
+    height: 35px;
+    padding: 4.5px 9px;
+}
+
+.btn-sm {
+    background-color: #006b1b;
+    color: #D9A679;
+}
+
+.btn-sm2 {
+    font-size: 10.5px;
+    background-color: darkred;
+}
+.list-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.list-group-item {
+    height: 80px;
+    width: 70%;
+    margin: 1px;
+    font-size: 20px;
+    border-radius: 5px;
+    background-color: #73563D;
+    border-color: #73563D;
+}
