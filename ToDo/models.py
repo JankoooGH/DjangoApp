@@ -70,29 +70,3 @@ class Task(models.Model):
 
     def __str__(self):
         return f"{self.title} ({self.get_task_type_display()})"
-
-
-
-    #
-    # def count_streak(self):
-    #     today = date.today()
-    #
-    #     if not self.last_completed:
-    #         if self.completed:
-    #             self.streak = 1
-    #             self.last_completed = today
-    #             self.save()
-    #         return self.streak
-    #
-    #     if self.last_completed == today:
-    #         return self.streak
-    #     elif self.last_completed == today - timedelta(days=1):
-    #         self.streak += 1
-    #     else:
-    #         self.streak = 1
-    #
-    #     if self.completed:
-    #         self.last_completed = today
-    #
-    #     self.save()
-    #     return self.streak
