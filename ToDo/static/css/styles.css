@@ -1,4 +1,4 @@
-body {
+body {;
     background-color: #F2C894;
     font-family: "Montserrat", sans-serif;
 }
@@ -36,4 +36,15 @@ body {
     border-radius: 5px;
     background-color: #73563D;
     border-color: #73563D;
+}
+
+
+/*MODAL*/
+
+.modal-content{
+    background-color: #D9A679 !important;
+}
+
+.modal-body{
+    text-align: center;
 }
