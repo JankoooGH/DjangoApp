@@ -28,11 +28,27 @@ class Task(models.Model):
     weekly_progress = models.IntegerField(default=0)
     last_week = models.CharField(max_length=10, null=True, blank=True)
 
+    def is_done_today(self):
+        today = timezone.localdate()
+
+        if self.task_type == self.TASK_ONCE:
+            return self.completed
+
+        if self.task_type == self.TASK_DAILY:
+            return self.last_completed == today
+
+        if self.task_type == self.TASK_WEEKLY:
+            return self.logs.filter(date=today, completed=True).exists()
+
+        return False
+
     def is_complete_today(self):
         today = timezone.localdate()
         return self.last_completed == today
 
     def once_task(self):
+        if self.completed:
+            return
         self.completed = True
         self.save()
 
@@ -47,26 +63,45 @@ class Task(models.Model):
         self.last_completed = today
         self.save()
 
-    def weekly_task(self):
+
+    #
+    def weekly_progress_count(self):
         today = timezone.localdate()
         year, week, _ = today.isocalendar()
-        current_week = f"{year}-{week}"
-        target = self.weekly_target or 1
+        return self.logs.filter(
+            date__week=week,
+            date__year=year,
+            completed=True
+        ).count()
 
-        if self.last_week != current_week:
-            if self.weekly_progress >= target:
-                self.streak += 1
-            else:
-                self.streak = 0
-            self.weekly_progress = 0
-            self.last_week = current_week
 
-        if self.weekly_progress < target:
-            self.weekly_progress += 1
-            if self.weekly_progress == target:
-                self.streak += 1
+    def weekly_task(self):
+        today = timezone.localdate()
+        log, created = self.logs.get_or_create(date=today)
 
-        self.save()
+        log.completed = not log.completed
+        log.save()
+
+    def save(self, *args, **kwargs):
+        if self.task_type == self.TASK_ONCE and not self.date:
+            self.date = timezone.localdate()
+        super().save(*args, **kwargs)
+
+
+
 
     def __str__(self):
         return f"{self.title} ({self.get_task_type_display()})"
+
+class TaskLog(models.Model):
+    task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="logs")
+    date = models.DateField()
+    completed = models.BooleanField(default=True)
+
+    class Meta:
+        unique_together = ('task', 'date')
+
+
+
+
+

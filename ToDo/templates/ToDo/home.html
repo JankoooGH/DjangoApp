@@ -3,7 +3,7 @@
 {% load static %}
 {% load widget_tweaks %}
 <head>
-    <title>ToDo App</title>
+    <title>Habits</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,12 +13,18 @@
 </head>
 <body>
     <div class="container mt-4">
-        <h1 class="mb-4">Moja lista ToDo 🚀</h1>
+        <h1 class="mb-4">Habits 🚀</h1>
 
-        <!-- Przycisk otwierający modal -->
+
+                <!-- Przycisk otwierający modal -->
+
         <button type="button" class="btn btn-primary mb-3 d-block mx-auto" data-bs-toggle="modal" data-bs-target="#addTaskModal">
             ➕ Dodaj zadanie
         </button>
+
+
+                <!-- Lista zadań -->
+
   <ul class="list-group">
     {% for task in tasks %}
       <li class="list-group-item d-flex justify-content-between align-items-center">
@@ -28,22 +34,45 @@
           {% else %}
             {{ task.title }}
           {% endif %}
-            <span class="badge bg-secondary ms-2">{{ task.get_task_type_display }}</span>
+
+            <span class="badge bg-secondary ms-2">
+                {{ task.get_task_type_display }}
+            </span>
+
+            {% if task.task_type == 'WEEKLY' %}
+              <span class="badge bg-info text-dark ms-2">
+                Ukończono: {{ task.weekly_progress_count }} z {{ task.weekly_target }}
+              </span>
+            {% endif %}
 
             <span class="badge bg-warning text-dark ms-2">🔥 {{ task.streak }} </span>
 
         </div>
 
         <div>
-          <!-- Toggle -->
-          <form method="POST" action="{% url 'toggle_task' task.id %}" style="display:inline;">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-sm btn-outline-secondary">
-              {% if task.completed %}Ukończono✅{% else %}✓ Zakończ{% endif %}
+
+                <!-- Toggle -->
+          <form method="POST" action="{% url 'toggle_task' task.id %}" style="display:inline;"><button
+              type="submit"
+              class="btn btn-sm
+                     {% if task.is_done_today %}
+                       btn-success
+                     {% else %}
+                       btn-outline-secondary
+                     {% endif %}"
+              {% if task.is_done_today %}disabled{% endif %}
+            >
+              {% if task.is_done_today %}
+                Ukończono ✅
+              {% else %}
+                ✓ Zakończ
+              {% endif %}
             </button>
+            {% csrf_token %}
+
           </form>
 
-          <!-- Delete -->
+                <!-- Delete -->
           <form method="POST" action="{% url 'delete_task' task.id %}" style="display:inline;">
             {% csrf_token %}
             <button type="submit" class="btn btn-sm2 btn-outline-danger">❌</button>

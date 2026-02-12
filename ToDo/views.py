@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Task
 from .forms import TaskForm
+from django.utils import timezone
+from django.db.models import Q
 
 
 def home(request):
@@ -46,3 +48,12 @@ context = {
     "tasks_weekly": tasks_weekly,
     "tasks_once": tasks_once,
 }
+
+
+today = timezone.localdate()
+
+tasks = Task.objects.filter(
+    Q(task_type=Task.TASK_DAILY) |
+    Q(task_type=Task.TASK_WEEKLY) |
+    Q(task_type=Task.TASK_ONCE, date=today)
+)
