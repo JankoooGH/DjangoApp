@@ -64,7 +64,7 @@ class Task(models.Model):
         self.save()
 
 
-    #
+
     def weekly_progress_count(self):
         today = timezone.localdate()
         year, week, _ = today.isocalendar()

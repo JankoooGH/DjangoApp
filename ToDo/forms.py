@@ -4,6 +4,11 @@ from django.utils import timezone
 
 
 class TaskForm(forms.ModelForm):
+    date = forms.DateField(
+        input_formats=['%d.%m.%Y'],
+        widget=forms.DateInput(attrs={'placeholder': 'dd.mm.yyyy'})
+    )
+
     class Meta:
         model = Task
         fields = ['title', 'task_type', 'date', "weekly_target"]

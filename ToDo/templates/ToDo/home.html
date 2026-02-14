@@ -51,6 +51,8 @@
 
         <div>
 
+
+
                 <!-- Toggle -->
           <form method="POST" action="{% url 'toggle_task' task.id %}" style="display:inline;"><button
               type="submit"
@@ -67,10 +69,12 @@
               {% else %}
                 ✓ Zakończ
               {% endif %}
+
             </button>
             {% csrf_token %}
 
           </form>
+
 
                 <!-- Delete -->
           <form method="POST" action="{% url 'delete_task' task.id %}" style="display:inline;">

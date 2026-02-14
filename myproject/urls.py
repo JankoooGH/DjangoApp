@@ -16,8 +16,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from ToDo import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('ToDo.urls')),
+    path("calendar/", views.calendar_view, name="calendar"),
+    path("calendar/events/", views.calendar_events, name="calendar_events"),
 ]

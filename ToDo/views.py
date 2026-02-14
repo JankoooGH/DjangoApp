@@ -3,17 +3,29 @@ from .models import Task
 from .forms import TaskForm
 from django.utils import timezone
 from django.db.models import Q
+from django.http import JsonResponse
 
+
+today = timezone.localdate()
 
 def home(request):
-    tasks = Task.objects.all()
     form = TaskForm()
 
-    if request.method == 'POST':
+    tasks = Task.objects.filter(
+        Q(task_type=Task.TASK_DAILY) |
+        Q(task_type=Task.TASK_WEEKLY) |
+        Q(task_type=Task.TASK_ONCE, date=today)
+    )
+
+    if request.method == "POST":
         form = TaskForm(request.POST)
         if form.is_valid():
+            print("FORMULARZ POPRAWNY")
             form.save()
-            return redirect('home')
+        else:
+            print("BŁĘDY:", form.errors)
+
+        return redirect('home')
 
     context = {'tasks': tasks, 'form': form}
     return render(request, 'ToDo/home.html', context)
@@ -49,11 +61,21 @@ context = {
     "tasks_once": tasks_once,
 }
 
+# kalendarz
 
-today = timezone.localdate()
+def calendar_view(request):
+    return render(request, "kalendarz/calendar.html")
 
-tasks = Task.objects.filter(
-    Q(task_type=Task.TASK_DAILY) |
-    Q(task_type=Task.TASK_WEEKLY) |
-    Q(task_type=Task.TASK_ONCE, date=today)
-)
+def calendar_events(request):
+    events = []
+
+    tasks = Task.objects.filter(task_type=Task.TASK_ONCE)
+
+    for task in tasks:
+        if task.date:
+            events.append({
+                "title": task.title,
+                "start": task.date.isoformat(),
+            })
+
+    return JsonResponse(events, safe=False)
