@@ -5,6 +5,7 @@ from django.utils import timezone
 
 class TaskForm(forms.ModelForm):
     date = forms.DateField(
+        required=False,
         input_formats=['%d.%m.%Y'],
         widget=forms.DateInput(attrs={'placeholder': 'dd.mm.yyyy'})
     )
@@ -20,6 +21,9 @@ class TaskForm(forms.ModelForm):
 
         if task_type == Task.TASK_ONCE and not date:
             cleaned_data["date"] = timezone.localdate()
+
+        # if task_type == Task.TASK_ONCE:
+
 
         return cleaned_data
 

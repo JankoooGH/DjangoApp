@@ -41,11 +41,11 @@
 
             {% if task.task_type == 'WEEKLY' %}
               <span class="badge bg-info text-dark ms-2">
-                Ukończono: {{ task.weekly_progress_count }} z {{ task.weekly_target }}
+                Ukończono: {{ task.weekly_progress }} z {{ task.weekly_target }}
               </span>
             {% endif %}
 
-            <span class="badge bg-warning text-dark ms-2">🔥 {{ task.streak }} </span>
+            <span class="badge bg-warning text-dark ms-2">🔥 {{ task.weekly_streak }} </span>
 
         </div>
 
