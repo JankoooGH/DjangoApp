@@ -87,10 +87,7 @@ class Task(models.Model):
             log.completed = not log.completed
             log.save()
 
-    def save(self, *args, **kwargs):
-        if self.task_type == self.TASK_ONCE and not self.date:
-            self.date = timezone.localdate()
-        super().save(*args, **kwargs)
+
 
     def weekly_streak(self):
         if self.task_type != self.TASK_WEEKLY or not self.weekly_target:
@@ -119,6 +116,11 @@ class Task(models.Model):
                 break
 
         return streak
+
+    def save(self, *args, **kwargs):
+        if self.task_type == self.TASK_ONCE and not self.date:
+            self.date = timezone.localdate()
+        super().save(*args, **kwargs)
 
 
 

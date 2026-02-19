@@ -4,11 +4,9 @@ Habitly to aplikacja webowa typu Habit Tracker, umożliwiająca zarządzanie naw
 monitorowanie postępów oraz budowanie systematyczności poprzez mechanizm streaków
 i analizę tygodniowej aktywności użytkownika.
 
-Projekt realizowany w ramach pracy dyplomowej.
-
 ---
 
-## 🎯 Cel projektu
+## Cel projektu
 
 Celem projektu jest zaprojektowanie i implementacja aplikacji webowej,
 która pozwala użytkownikowi:
@@ -20,11 +18,11 @@ która pozwala użytkownikowi:
 - zarządzać swoim kontem użytkownika.
 
 Projekt skupia się na połączeniu przejrzystego interfejsu użytkownika
-z solidną logiką backendową.
+z logiką backendową.
 
 ---
 
-## 🛠 Technologie
+## 🛠echnologie
 
 ### Backend
 - Python
@@ -35,13 +33,7 @@ z solidną logiką backendową.
 - CSS3
 - JavaScript
 
-### Baza danych
-- SQLite (środowisko deweloperskie)
-- (docelowo możliwość migracji do PostgreSQL)
-
----
-
-## 🧠 Architektura systemu
+## Architektura systemu
 
 Projekt oparty jest o architekturę MVT (Model–View–Template),
 zgodnie ze standardem frameworka Django.
@@ -58,24 +50,25 @@ natomiast logika biznesowa realizowana jest po stronie backendu.
 
 ---
 
-## 🚀 Funkcjonalności (aktualny stan)
+## Funkcjonalności (aktualny stan)
 
-- ✅ Dodawanie zadań
-- ✅ Oznaczanie zadań jako ukończone
-- ✅ System streaków
-- ✅ Widok tygodniowy
-
----
-
-## 📂 Struktura projektu
-
-
-
-
+- Dodawanie zadań
+- Oznaczanie zadań jako ukończone
+- System streaków
+- Widok tygodniowy
+- Podgląd zadań typu once w kalendarzu (http://127.0.0.1:8000/calendar/)
 
 ---
 
-## ⚙ Uruchomienie projektu
+## Struktura projektu
+
+
+
+
+
+---
+
+## Uruchomienie projektu
 
 1. Klonowanie repozytorium:
    git clone <adres_repo>
@@ -91,7 +84,7 @@ natomiast logika biznesowa realizowana jest po stronie backendu.
 
 ---
 
-## 📈 Plan dalszego rozwoju
+## Plan dalszego rozwoju
 
 - Rozbudowa systemu statystyk
 - Implementacja wykresów aktywności
