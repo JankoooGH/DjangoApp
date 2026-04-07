@@ -60,21 +60,25 @@
             <!-- Toggle -->
             <form method="POST" action="{% url 'toggle_task' task.id %}">
               {% csrf_token %}
-              <button type="submit"
-                class="btn-task
+            <button type="submit"
+              class="btn-task
                 {% if task.is_done_today %}
                   btn-success
                 {% else %}
-                  btn-outline-secondary
+                  btn-outline-secondaryw
                 {% endif %}"
-                {% if task.is_done_today %}disabled{% endif %}
-              >
-                {% if task.is_done_today %}
-                  Ukończono ✅
+              {% if task.is_done_today and task.task_type != 'WEEKLY' %}disabled{% endif %}
+            >
+              {% if task.is_done_today %}
+                {% if task.task_type == 'WEEKLY' %}
+                  Odkliknij ↩
                 {% else %}
-                  ✓ Zakończ
+                  Ukończono ✅
                 {% endif %}
-              </button>
+              {% else %}
+                ✓ Zakończ
+              {% endif %}
+            </button>
             </form>
 
             <!-- Delete -->

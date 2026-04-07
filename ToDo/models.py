@@ -43,10 +43,6 @@ class Task(models.Model):
 
         return False
 
-    def is_complete_today(self):
-        today = timezone.localdate()
-        return self.last_completed == today
-
     def once_task(self):
         if self.completed:
             return
@@ -84,8 +80,7 @@ class Task(models.Model):
         )
 
         if not created:
-            log.completed = not log.completed
-            log.save()
+            log.delete()
 
 
 

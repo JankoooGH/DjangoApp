@@ -6,9 +6,10 @@ from django.db.models import Q
 from django.http import JsonResponse
 
 
-today = timezone.localdate()
 
 def home(request):
+    today = timezone.localdate()
+
     form = TaskForm()
 
     tasks = Task.objects.filter(
@@ -50,16 +51,6 @@ def toggle_task(request, task_id):
 
     return redirect('home')
 
-
-tasks_daily = Task.objects.filter(task_type="DAILY")
-tasks_weekly = Task.objects.filter(task_type="WEEKLY")
-tasks_once = Task.objects.filter(task_type="ONCE")
-
-context = {
-    "tasks_daily": tasks_daily,
-    "tasks_weekly": tasks_weekly,
-    "tasks_once": tasks_once,
-}
 
 # kalendarz
 
