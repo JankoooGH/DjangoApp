@@ -28,7 +28,7 @@ def home(request):
         return redirect('home')
 
     context = {'tasks': tasks, 'form': form}
-    return render(request, 'ToDo/home.html', context)
+    return render(request, 'ToDo/main.html', context)
 
 
 def delete_task(request, task_id):

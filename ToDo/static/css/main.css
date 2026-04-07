@@ -1,0 +1,130 @@
+body {
+    font-family: Montserrat, sans-serif;
+    background-color: #e5dfd7;
+}
+
+header {
+    width: 100%;
+    height: 50px;
+    background-color: #f7edde;
+    box-shadow: 0 2px 8px rgba(255, 0, 0, 0.04);
+}
+
+
+.logo-img {
+    position: absolute;
+    top: 9px;
+    left: 10px;
+    height: 32px;
+    width: auto;
+    display: block;
+    transition: transform 0.2s ease;
+
+}
+
+.logo-name {
+    position: absolute;
+    top: 10px;
+    left: 45px;
+    font-size: 20px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+
+.logo-img:hover {
+    transform: scale(1.05)
+}
+
+.btn {
+    width: auto;
+    height: auto;   
+    align-content: center;
+    border: 1px solid black;
+    background-color: #e5dfd7;
+    padding: 5px;
+    border-radius: 4px;
+    transition: transform 0.2s ease;
+    height: 30px;
+}
+
+.btn:hover, .fa-calendar:hover {
+    background: #fff;
+    transform: scale(1.05)
+}
+
+.login {
+    position: absolute;
+    top: 10px;
+    right: 25px;
+}
+
+.user {
+    position: absolute;
+    top: 10px;
+    right: 102px;
+}
+
+.fa-calendar {
+    position: absolute;
+    top: 10px;
+    right: 169px;
+    display: flex;
+    font-size: 30px;
+    border-radius: 10px;
+    color: #333;
+    transition: all 0.2s ease;
+}
+
+/* mid */
+
+.task-bar {
+    width: 65%;
+    margin: 100px auto;
+    background-color: #f7edde;
+    border-radius: 10px;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+/* nagłówek */
+.task-bar-head {
+    text-align: center;
+    font-size: 24px;
+}
+
+/* lista */
+.list-group {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* kafelek */
+.my-task {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background: white;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+/* lewa strona */
+.task-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* prawa strona (przyciski) */
+.task-actions {
+    display: flex;
+    gap: 10px;
+}
