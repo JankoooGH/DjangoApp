@@ -22,7 +22,7 @@ z logiką backendową.
 
 ---
 
-## 🛠echnologie
+## Technologie
 
 ### Backend
 - Python
@@ -92,6 +92,7 @@ natomiast logika biznesowa realizowana jest po stronie backendu.
 - Wdrożenie aplikacji na serwer produkcyjny
 - Statystyki długoterminowe
 - Dashboard użytkownika
+
 
 
 
