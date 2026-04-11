@@ -21,7 +21,10 @@
         </div>
         <a href="{% url 'calendar' %}" alt="kalendarz"><i class="fa-regular fa-calendar"></i></a>
         <button class="btn user" >Profil</button>
-        <button class="btn login" >Wyloguj</button>
+        <form method="POST" action="{% url 'logout' %}">
+          {% csrf_token %}
+          <button type="submit" class="btn login">Wyloguj</button>
+        </form>
     </header>
 
     <main class="app-content">

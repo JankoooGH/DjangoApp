@@ -1,136 +1,43 @@
 <!DOCTYPE html>
-<html lang="utf-8">
+<html lang="pl">
 {% load static %}
-{% load widget_tweaks %}
 <head>
-    <title>Habits</title>
+    <meta charset="UTF-8">
+    <title>Habitly</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+    <script src="https://kit.fontawesome.com/e00b0940e0.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
-    <div class="container mt-4">
-        <h1 class="mb-4">Habits 🚀</h1>
+  <div class="app">
 
-
-                <!-- Przycisk otwierający modal -->
-
-        <button type="button" class="btn btn-primary mb-3 d-block mx-auto" data-bs-toggle="modal" data-bs-target="#addTaskModal">
-            ➕ Dodaj zadanie
-        </button>
-
-
-                <!-- Lista zadań -->
-
-  <ul class="list-group">
-    {% for task in tasks %}
-      <li class="list-group-item d-flex justify-content-between align-items-center">
-        <div>
-          {% if task.completed %}
-            <s>{{ task.title }}</s>
-          {% else %}
-            {{ task.title }}
-          {% endif %}
-
-            <span class="badge bg-secondary ms-2">
-                {{ task.get_task_type_display }}
-            </span>
-
-            {% if task.task_type == 'DAILY' %}
-                <span class="badge bg-warning text-dark ms-2">🔥 {{ task.streak }} </span>
-            {% elif task.task_type == 'WEEKLY' %}
-                <span class="badge bg-info text-dark ms-2"> Ukończono: {{ task.weekly_progress_count }} z {{ task.weekly_target }}</span>
-                <span class="badge bg-warning text-dark ms-2">🔥 {{ task.weekly_streak }} </span>
-            {% endif %}
-
+    <header class="app-header">
+        <div class='logo-bar'>
+            <img src="{% static 'img/logo.png' %}" alt="logo" class="logo-img">
+            <h1 class="logo-name">Habitly</h1>
         </div>
+        <a href="{% url 'auth' %}" class="btn login">Logowanie</a>
+    </header>
 
-        <div>
-
-
-
-                <!-- Toggle -->
-          <form method="POST" action="{% url 'toggle_task' task.id %}" style="display:inline;"><button
-              type="submit"
-              class="btn btn-sm
-                     {% if task.is_done_today %}
-                       btn-success
-                     {% else %}
-                       btn-outline-secondary
-                     {% endif %}"
-              {% if task.is_done_today %}disabled{% endif %}
-            >
-              {% if task.is_done_today %}
-                Ukończono ✅
-              {% else %}
-                ✓ Zakończ
-              {% endif %}
-
-            </button>
-            {% csrf_token %}
-
-          </form>
-
-
-                <!-- Delete -->
-          <form method="POST" action="{% url 'delete_task' task.id %}" style="display:inline;">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-sm2 btn-outline-danger">❌</button>
-          </form>
+    <main class="app-content">
+        <div class="txt-content">
+            <h1>Track your
+            <br>
+            <span class="text-primary">habits.</span>
+            <br>
+            Change your life.</h1>
         </div>
-      </li>
-    {% empty %}
-      <li class="list-group-item">Brak zadań 🙃</li>
-    {% endfor %}
-  </ul>
-</div>
-
-
-
-<!-- MODAL -->
-<div class="modal fade" id="addTaskModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content custom-modal">
-      <div class="modal-header">
-        <h5 class="modal-title">Dodaj zadanie</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body">
-        <form method="POST" action="">
-          {% csrf_token %}
-
-          <div class="mb-3">
-            {{ form.title.label_tag }}
-            {{ form.title|add_class:"form-control" }}
-          </div>
-
-          <div class="mb-3">
-            {{ form.task_type.label_tag }}
-            {{ form.task_type|add_class:"form-select" }}
-          </div>
-
-          <div class="mb-3">
-            {{ form.date.label_tag }}
-            {{ form.date|add_class:"form-control" }}
-          </div>
-
-          <div class="mb-3" id="weekly-target-field" style="display:none;">
-            {{ form.weekly_target.label_tag }}
-            {{ form.weekly_target|add_class:"form-control" }}
-          </div>
-
-          <button type="submit" class="btn btn-primary w-100">Dodaj</button>
-        </form>
-      </div>
-    </div>
+        <div class="task-bar">
+            <h1 class="task-bar-head">Dzisiejsze zadania</h1>
+            <ul class="add-task-item">➕ Dodaj zadanie</ul>
+            <ul class="task-item">Bieganie Weekly Ukończono: 2 z 4 0 🔥<p>✓ Zakończ ❌</p></ul>
+            <ul class="task-item">Czytanie Daily  4 🔥<p>Ukończono ✅ ❌</p></ul>
+            <ul class="task-item">Zakupy Once <p>✓ Zakończ ❌</p></ul>
+        </div>
+    </main>
   </div>
-</div>
-
-
-<script src="{% static 'js/main.js' %}"></script>
-
 </body>
 </html>

@@ -1,9 +1,13 @@
 from django.db import models
 from django.utils import timezone
 from datetime import timedelta
+from django.contrib.auth.models import User
+
 
 
 class Task(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+
     TASK_DAILY = "DAILY"
     TASK_WEEKLY = "WEEKLY"
     TASK_ONCE = "ONCE"
