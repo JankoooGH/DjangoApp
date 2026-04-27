@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pl">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <title>Profil — Habitly</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <style> body { font-family: 'Montserrat', sans-serif; } </style>
+</head>
+<body class="bg-stone-100 min-h-screen">
+
+    <!-- Header -->
+    <header class="w-full h-12 bg-amber-50 flex items-center px-5 shadow-sm">
+        <a href="{% url 'home' %}" class="text-indigo-600 font-semibold text-sm">← Powrót</a>
+        <h1 class="flex-1 text-center text-lg font-bold uppercase tracking-widest">Habitly</h1>
+    </header>
+
+    <main class="max-w-xl mx-auto mt-10 px-4 flex flex-col gap-6">
+
+        <!-- Karta profilu -->
+        <div class="bg-white rounded-2xl shadow p-6 text-center">
+            <div class="text-6xl mb-2">{{ rank_icon }}</div>
+            <h2 class="text-2xl font-bold">{{ request.user.username }}</h2>
+            <p class="text-indigo-600 font-semibold mt-1">{{ rank_name }}</p>
+            <p class="text-gray-400 text-sm mt-1">{{ profile.xp }} XP</p>
+
+            <!-- Pasek postępu -->
+            {% if xp_to_next > 0 %}
+                <div class="mt-4">
+                    <div class="w-full bg-gray-200 rounded-full h-3">
+                        <div class="bg-indigo-500 h-3 rounded-full transition-all"
+                             style="width: {{ progress }}%"></div>
+                    </div>
+                    <p class="text-xs text-gray-400 mt-1">{{ xp_to_next }} XP do następnej rangi</p>
+                </div>
+            {% else %}
+                <p class="text-yellow-500 font-bold mt-4">👑 Osiągnąłeś maksymalną rangę!</p>
+            {% endif %}
+        </div>
+
+        <!-- Statystyki -->
+        <div class="bg-white rounded-2xl shadow p-6">
+            <h3 class="font-bold text-lg mb-4">📊 Statystyki</h3>
+            <div class="flex justify-around text-center">
+                <div>
+                    <p class="text-3xl font-bold text-indigo-600">{{ profile.xp }}</p>
+                    <p class="text-sm text-gray-400">Łączne XP</p>
+                </div>
+                <div>
+                    <p class="text-3xl font-bold text-indigo-600">{{ longest_streak }}</p>
+                    <p class="text-sm text-gray-400">Najdłuższy streak</p>
+                </div>
+                <div>
+                    <p class="text-3xl font-bold text-indigo-600">{{ total_tasks }}</p>
+                    <p class="text-sm text-gray-400">Ukończone zadania</p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+</body>
+</html>

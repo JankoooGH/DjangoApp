@@ -5,211 +5,361 @@
 <head>
     <meta charset="UTF-8">
     <title>Habitly Dashboard</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://kit.fontawesome.com/e00b0940e0.js" crossorigin="anonymous"></script>
-
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
 </head>
 <body>
-  <div class="app">
+<div class="app">
+
+    <!-- ========== HEADER ========== -->
     <header class="app-header">
-        <div class='logo-bar'>
-            <a href="/"></a>
-                <img src="{% static 'img/logo.png' %}" alt="logo" class="logo-img">
-                <h1 class="logo-name">Habitly</h1>
+        <div class="logo-bar">
+            <img src="{% static 'img/logo.png' %}" alt="logo" class="logo-img">
+            <span class="logo-name">Habitly</span>
         </div>
-        <a href="{% url 'calendar' %}" alt="kalendarz"><i class="fa-regular fa-calendar"></i></a>
-        <button class="btn user" >Profil</button>
-        <form method="POST" action="{% url 'logout' %}">
-          {% csrf_token %}
-          <button type="submit" class="btn login">Wyloguj</button>
-        </form>
+        <div class="rank-bar">
+            <span class="rank-label">{{ rank_icon }} {{ rank_name }}</span>
+            <div class="rank-progress-bg">
+                <div class="rank-progress-fill" style="width: {{ progress }}%"></div>
+            </div>
+            <span class="rank-xp">{{ profile.xp }} XP</span>
+        </div>
+        <nav class="header-nav">
+            <a href="{% url 'calendar' %}" class="nav-icon" title="Kalendarz">
+                <i class="fa-regular fa-calendar"></i>
+            </a>
+            <a href="{% url 'profile' %}" class="btn">Profil</a>
+            <form method="POST" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="btn">Wyloguj</button>
+            </form>
+        </nav>
     </header>
 
+    <!-- ========== MAIN ========== -->
     <main class="app-content">
         <div class="task-bar">
+
             <h1 class="task-bar-head">Dzisiejsze zadania</h1>
-            <button onclick="openModal()"
-                    class="task-bar-btn px-4 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition">
-              ➕ Dodaj zadanie
+
+            <button onclick="openModal()" class="add-task-btn">
+                ➕ Dodaj zadanie
             </button>
-        <ul class="list-group">
-          {% for task in tasks %}
 
-        <li class="my-task">
-          <div class="task-left">
-            {% if task.completed %}
-              <s>{{ task.title }}</s>
-            {% else %}
-              {{ task.title }}
-            {% endif %}
+            <ul class="list-group">
+                {% for task in tasks %}
+                <li class="my-task">
+                    <div class="task-left">
+                        {% if task.is_done_today %}
+                            <s class="task-title done">{{ task.title }}</s>
+                        {% else %}
+                            <span class="task-title">{{ task.title }}</span>
+                        {% endif %}
 
-            <span class="badge bg-secondary ms-2">
-              {{ task.get_task_type_display }}
-            </span>
+                        <span class="badge badge-type">{{ task.get_task_type_display }}</span>
 
-            {% if task.task_type == 'DAILY' %}
-              <span class="badge bg-warning text-dark ms-2">🔥 {{ task.streak }}</span>
-            {% elif task.task_type == 'WEEKLY' %}
-              <span class="badge bg-info text-dark ms-2">
-                Ukończono: {{ task.weekly_progress_count }} z {{ task.weekly_target }}
-              </span>
-              <span class="badge bg-warning text-dark ms-2">🔥 {{ task.weekly_streak }}</span>
-            {% endif %}
-          </div>
+                        {% if task.task_type == 'DAILY' %}
+                            <span class="badge badge-streak">🔥 {{ task.streak }}</span>
+                        {% elif task.task_type == 'WEEKLY' %}
+                            <span class="badge badge-weekly">Ukończono: {{ task.weekly_progress_count }} z {{ task.weekly_target }}</span>
+                            <span class="badge badge-streak">🔥 {{ task.weekly_streak }}</span>
+                        {% endif %}
+                    </div>
 
-          <div class="task-actions">
-            <!-- Toggle -->
-            <form method="POST" action="{% url 'toggle_task' task.id %}">
-              {% csrf_token %}
-            <button type="submit"
-              class="btn-task
-                {% if task.is_done_today %}
-                  btn-success
-                {% else %}
-                  btn-outline-secondaryw
-                {% endif %}"
-              {% if task.is_done_today and task.task_type != 'WEEKLY' %}disabled{% endif %}
-            >
-              {% if task.is_done_today %}
-                {% if task.task_type == 'WEEKLY' %}
-                  Odkliknij ↩
-                {% else %}
-                  Ukończono ✅
-                {% endif %}
-              {% else %}
-                ✓ Zakończ
-              {% endif %}
-            </button>
-            </form>
+                    <div class="task-actions">
+                        <!-- Notatki -->
+                        <button class="btn-task btn-note" onclick="openNoteModal({{ task.id }}, '{{ task.title|escapejs }}')">
+                            📝
+                        </button>
 
-            <!-- Delete -->
-            <form method="POST" action="{% url 'delete_task' task.id %}">
-              {% csrf_token %}
-              <button type="submit" class="btn-task btn-outline-danger">
-                ❌
-              </button>
-            </form>
-          </div>
-        </li>
-          {% empty %}
-            <li class="list-group-item">Brak zadań 🙃</li>
-          {% endfor %}
-        </ul>
+                        <!-- Toggle -->
+                        <form method="POST" action="{% url 'toggle_task' task.id %}">
+                            {% csrf_token %}
+                            <button type="submit"
+                                class="btn-task {% if task.is_done_today %}btn-done{% else %}btn-todo{% endif %}"
+                                {% if task.is_done_today and task.task_type != 'WEEKLY' %}disabled{% endif %}>
+                                {% if task.is_done_today %}
+                                    {% if task.task_type == 'WEEKLY' %}Odkliknij ↩{% else %}Ukończono ✅{% endif %}
+                                {% else %}
+                                    ✓ Zakończ
+                                {% endif %}
+                            </button>
+                        </form>
 
-      </div>
+                        <!-- Usuń -->
+                        <form method="POST" action="{% url 'delete_task' task.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-task btn-delete">❌</button>
+                        </form>
+                    </div>
+                </li>
+                {% empty %}
+                <li class="task-empty">Brak zadań na dziś 🙃</li>
+                {% endfor %}
+            </ul>
+
+        </div>
     </main>
-  </div>
+
+</div>
 
 
+<!-- ========== MODAL NOTATEK ========== -->
+<div id="noteModal" class="modal-overlay" onclick="handleNoteOverlayClick(event)">
+    <div class="modal-box note-modal-box">
 
-<!-- MODAL -->
-<div id="taskModal"
-     class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50">
+        <button onclick="closeNoteModal()" class="modal-close">✕</button>
+        <h2 class="modal-title" id="note-modal-title">📝 Notatki</h2>
 
-  <!-- Modal Box -->
-  <div class="bg-white w-full max-w-md mx-4 rounded-2xl shadow-2xl p-6 relative animate-fadeIn">
+        <div class="note-modal-body">
 
-    <!-- Close Button -->
-    <button onclick="closeModal()"
-            class="absolute top-4 right-4 text-gray-400 hover:text-gray-700 text-xl">
-      ✕
-    </button>
+            <!-- LEWA STRONA: formularz -->
+            <div class="note-form-panel">
+                <div class="form-group">
+                    <label>Tytuł notatki</label>
+                    <input type="text" id="note-title-input" class="form-input"
+                           placeholder="np. Przemyślenia, Plan...">
+                </div>
+                <div class="form-group">
+                    <label>Treść</label>
+                    <textarea id="note-content-input" class="form-input note-textarea"
+                              placeholder="Zapisz swoje przemyślenia..."></textarea>
+                </div>
+                <button onclick="saveNote()" class="modal-submit note-save-btn">
+                    💾 Zapisz notatkę
+                </button>
+                <p id="note-save-msg" class="note-save-msg hidden">✅ Zapisano!</p>
+            </div>
 
-    <h2 class="text-2xl font-semibold mb-6 text-center">
-      Dodaj zadanie
-    </h2>
+            <!-- PRAWA STRONA: lista notatek -->
+            <div class="note-list-panel">
+                <h3 class="note-list-heading">Zapisane notatki</h3>
+                <ul id="note-list" class="note-list">
+                    <li class="note-list-empty" id="note-list-empty">Brak notatek</li>
+                </ul>
+            </div>
 
-    <form method="POST" class="space-y-4">
-      {% csrf_token %}
+        </div>
+    </div>
+</div>
 
-      <!-- Title -->
-      <div>
-        <label class="block text-sm font-medium mb-1">
-          Nazwa zadania
-        </label>
-        {{ form.title|add_class:"w-full border rounded-xl px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none" }}
-      </div>
+<!-- ========== MODAL SZCZEGÓŁÓW NOTATKI ========== -->
+<div id="noteDetailModal" class="modal-overlay" onclick="handleDetailOverlayClick(event)">
+    <div class="modal-box note-detail-box">
+        <button onclick="closeNoteDetail()" class="modal-close">✕</button>
+        <h2 class="modal-title" id="note-detail-title"></h2>
+        <p class="note-detail-content" id="note-detail-content"></p>
+        <button onclick="deleteNote()" class="btn-task btn-delete note-delete-btn">🗑 Usuń notatkę</button>
+    </div>
+</div>
 
-      <!-- Task Type -->
-      <div>
-        <label class="block text-sm font-medium mb-1">
-          Rodzaj zadania
-        </label>
-        {{ form.task_type|add_class:"w-full border rounded-xl px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none" }}
-      </div>
 
-      <!-- Date (ONCE) -->
-      <div id="date-field">
-        <label class="block text-sm font-medium mb-1">
-          Data
-        </label>
-        {{ form.date|add_class:"w-full border rounded-xl px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none" }}
-      </div>
+<!-- ========== MODAL ZADAŃ ========== -->
+<div id="taskModal" class="modal-overlay">
+    <div class="modal-box">
+        <button onclick="closeModal()" class="modal-close">✕</button>
+        <h2 class="modal-title">Dodaj zadanie</h2>
 
-      <!-- Weekly target -->
-      <div id="weekly-field" class="hidden">
-        <label class="block text-sm font-medium mb-1">
-          Ile razy w tygodniu?
-        </label>
-        {{ form.weekly_target|add_class:"w-full border rounded-xl px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none" }}
-      </div>
+        <form method="POST" class="modal-form">
+            {% csrf_token %}
 
-      <button type="submit"
-              class="w-full bg-indigo-600 text-white py-2 rounded-xl hover:bg-indigo-700 transition">
-        Dodaj
-      </button>
-    </form>
+            <div class="form-group">
+                <label>Nazwa zadania</label>
+                {{ form.title|add_class:"form-input" }}
+            </div>
 
-  </div>
+            <div class="form-group">
+                <label>Rodzaj zadania</label>
+                {{ form.task_type|add_class:"form-input" }}
+            </div>
+
+            <div class="form-group" id="date-field">
+                <label>Data</label>
+                {{ form.date|add_class:"form-input" }}
+            </div>
+
+            <div class="form-group hidden" id="weekly-field">
+                <label>Ile razy w tygodniu?</label>
+                {{ form.weekly_target|add_class:"form-input" }}
+            </div>
+
+            <button type="submit" class="modal-submit">Dodaj</button>
+        </form>
+    </div>
 </div>
 
 
 <script>
+const CSRF_TOKEN = "{{ csrf_token }}";
+let activeTaskId = null;
+let activeNoteId = null;
+
+// ========== MODAL NOTATEK ==========
+
+function openNoteModal(taskId, taskTitle) {
+    activeTaskId = taskId;
+    document.getElementById("note-modal-title").textContent = "📝 " + taskTitle;
+    document.getElementById("note-title-input").value = "";
+    document.getElementById("note-content-input").value = "";
+    document.getElementById("note-save-msg").classList.add("hidden");
+    loadNotes();
+    document.getElementById("noteModal").classList.add("active");
+}
+
+function closeNoteModal() {
+    document.getElementById("noteModal").classList.remove("active");
+    activeTaskId = null;
+}
+
+function handleNoteOverlayClick(e) {
+    if (e.target.id === "noteModal") closeNoteModal();
+}
+
+function loadNotes() {
+    fetch(`/note/${activeTaskId}/list/`)
+        .then(r => r.json())
+        .then(data => renderNoteList(data.notes));
+}
+
+function renderNoteList(notes) {
+    const list = document.getElementById("note-list");
+    const empty = document.getElementById("note-list-empty");
+
+    // usuń stare wpisy (ale zostaw placeholder)
+    list.querySelectorAll(".note-list-item").forEach(el => el.remove());
+
+    if (notes.length === 0) {
+        empty.style.display = "block";
+        return;
+    }
+    empty.style.display = "none";
+
+    notes.forEach(note => {
+        const li = document.createElement("li");
+        li.className = "note-list-item";
+
+        const btn = document.createElement("button");
+        btn.className = "note-list-btn";
+        btn.innerHTML = `
+            <span class="note-list-icon">📄</span>
+            <span class="note-list-title-text">${escapeHtml(note.title)}</span>
+            <span class="note-list-arrow">›</span>
+        `;
+        btn.addEventListener("click", () => openNoteDetail(note.id, note.title, note.content));
+
+        li.appendChild(btn);
+        list.appendChild(li);
+    });
+}
+
+function saveNote() {
+    const title = document.getElementById("note-title-input").value.trim();
+    const content = document.getElementById("note-content-input").value.trim();
+
+    if (!title) {
+        document.getElementById("note-title-input").focus();
+        return;
+    }
+
+    fetch(`/note/${activeTaskId}/save/`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "X-CSRFToken": CSRF_TOKEN,
+        },
+        body: `title=${encodeURIComponent(title)}&content=${encodeURIComponent(content)}`
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.status === "ok") {
+            document.getElementById("note-title-input").value = "";
+            document.getElementById("note-content-input").value = "";
+            const msg = document.getElementById("note-save-msg");
+            msg.classList.remove("hidden");
+            setTimeout(() => msg.classList.add("hidden"), 2000);
+            loadNotes();
+        }
+    });
+}
+
+// ========== MODAL SZCZEGÓŁÓW ==========
+
+function openNoteDetail(noteId, title, content) {
+    activeNoteId = noteId;
+    document.getElementById("note-detail-title").textContent = title;
+    document.getElementById("note-detail-content").textContent = content || "(brak treści)";
+    document.getElementById("noteDetailModal").classList.add("active");
+}
+
+function closeNoteDetail() {
+    document.getElementById("noteDetailModal").classList.remove("active");
+    activeNoteId = null;
+}
+
+function handleDetailOverlayClick(e) {
+    if (e.target.id === "noteDetailModal") closeNoteDetail();
+}
+
+function deleteNote() {
+    if (!activeNoteId) return;
+    fetch(`/note/${activeNoteId}/delete/`, {
+        method: "POST",
+        headers: { "X-CSRFToken": CSRF_TOKEN }
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.status === "ok") {
+            closeNoteDetail();
+            loadNotes();
+        }
+    });
+}
+
+function escapeHtml(str) {
+    return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+}
+
+// ===== MODAL ZADAŃ =====
+
 function openModal() {
-  const modal = document.getElementById("taskModal");
-  modal.classList.remove("hidden");
-  modal.classList.add("flex");
+    document.getElementById("taskModal").classList.add("active");
 }
-
 function closeModal() {
-  const modal = document.getElementById("taskModal");
-  modal.classList.remove("flex");
-  modal.classList.add("hidden");
+    document.getElementById("taskModal").classList.remove("active");
 }
-
-// Zamknięcie po kliknięciu w tło
 document.getElementById("taskModal").addEventListener("click", function(e) {
-  if (e.target.id === "taskModal") {
-    closeModal();
-  }
+    if (e.target.id === "taskModal") closeModal();
 });
 
-// Dynamiczne pola
-document.addEventListener("DOMContentLoaded", function() {
-  const typeField = document.getElementById("id_task_type");
-  const weeklyField = document.getElementById("weekly-field");
-  const dateField = document.getElementById("date-field");
+// ===== DYNAMICZNE POLA FORMULARZA =====
+document.addEventListener("DOMContentLoaded", function () {
+    const typeField = document.getElementById("id_task_type");
+    const weeklyField = document.getElementById("weekly-field");
+    const dateField = document.getElementById("date-field");
 
-  function toggleFields() {
-    if (typeField.value === "WEEKLY") {
-      weeklyField.classList.remove("hidden");
-      dateField.classList.add("hidden");
+    function toggleFields() {
+        if (typeField.value === "WEEKLY") {
+            weeklyField.classList.remove("hidden");
+            dateField.classList.add("hidden");
+        } else if (typeField.value === "DAILY") {
+            weeklyField.classList.add("hidden");
+            dateField.classList.add("hidden");
+        } else {
+            weeklyField.classList.add("hidden");
+            dateField.classList.remove("hidden");
+        }
     }
-    else if (typeField.value === "DAILY") {
-      weeklyField.classList.add("hidden");
-      dateField.classList.add("hidden");
-    }
-    else { // ONCE
-      weeklyField.classList.add("hidden");
-      dateField.classList.remove("hidden");
-    }
-  }
 
-  typeField.addEventListener("change", toggleFields);
-  toggleFields();
+    typeField.addEventListener("change", toggleFields);
+    toggleFields();
 });
 </script>
+
 </body>
 </html>

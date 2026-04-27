@@ -4,7 +4,6 @@ from datetime import timedelta
 from django.contrib.auth.models import User
 
 
-
 class Task(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
 
@@ -64,8 +63,6 @@ class Task(models.Model):
         self.last_completed = today
         self.save()
 
-
-
     def weekly_progress_count(self):
         today = timezone.localdate()
         year, week, _ = today.isocalendar()
@@ -77,16 +74,12 @@ class Task(models.Model):
 
     def weekly_task(self):
         today = timezone.localdate()
-
         log, created = self.logs.get_or_create(
             date=today,
             defaults={"completed": True}
         )
-
         if not created:
             log.delete()
-
-
 
     def weekly_streak(self):
         if self.task_type != self.TASK_WEEKLY or not self.weekly_target:
@@ -96,10 +89,8 @@ class Task(models.Model):
         week_start = today - timedelta(days=today.weekday())
 
         streak = 0
-
         while True:
             week_end = week_start + timedelta(days=6)
-
             completed_days = (
                 self.logs
                 .filter(date__range=(week_start, week_end), completed=True)
@@ -107,7 +98,6 @@ class Task(models.Model):
                 .distinct()
                 .count()
             )
-
             if completed_days >= self.weekly_target:
                 streak += 1
                 week_start -= timedelta(days=7)
@@ -121,10 +111,9 @@ class Task(models.Model):
             self.date = timezone.localdate()
         super().save(*args, **kwargs)
 
-
-
     def __str__(self):
         return f"{self.title} ({self.get_task_type_display()})"
+
 
 class TaskLog(models.Model):
     task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="logs")
@@ -133,3 +122,60 @@ class TaskLog(models.Model):
 
     class Meta:
         unique_together = ('task', 'date')
+
+
+# ============================================================
+# Notatki do zadań
+# ============================================================
+
+class TaskNote(models.Model):
+    task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="notes")
+    title = models.CharField(max_length=200)
+    content = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"[{self.task.title}] {self.title}"
+
+
+# ============================================================
+# Profil użytkownika
+# ============================================================
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    xp = models.IntegerField(default=0)
+
+    def rank(self):
+        if self.xp >= 2000:
+            return ('👑', 'Legenda')
+        elif self.xp >= 1000:
+            return ('💎', 'Mistrz')
+        elif self.xp >= 500:
+            return ('🔥', 'Wojownik')
+        elif self.xp >= 200:
+            return ('⚡', 'Adept')
+        else:
+            return ('🌱', 'Nowicjusz')
+
+    def xp_to_next_rank(self):
+        thresholds = [200, 500, 1000, 2000]
+        for t in thresholds:
+            if self.xp < t:
+                return t - self.xp
+        return 0
+
+    def rank_progress_percent(self):
+        levels = [0, 200, 500, 1000, 2000]
+        for i in range(len(levels) - 1):
+            if self.xp < levels[i + 1]:
+                current = self.xp - levels[i]
+                total = levels[i + 1] - levels[i]
+                return int((current / total) * 100)
+        return 100
+
+    def __str__(self):
+        return f"{self.user.username} - {self.rank()[1]}"

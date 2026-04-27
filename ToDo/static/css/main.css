@@ -1,130 +1,728 @@
+/* ============================================
+   HABITLY — main.css
+   1. Reset & Base
+   2. Header
+   3. Logo
+   4. Rank Bar
+   5. Nawigacja
+   6. Główna zawartość
+   7. Task Bar
+   8. Lista zadań
+   9. Przyciski zadań
+   10. Modal (zadań)
+   11. Modal Notatek
+   ============================================ */
+
+
+/* ============================================
+   1. RESET & BASE
+   ============================================ */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
 body {
-    font-family: Montserrat, sans-serif;
+    font-family: 'Montserrat', sans-serif;
     background-color: #e5dfd7;
+    min-height: 100vh;
 }
 
-header {
+.hidden {
+    display: none !important;
+}
+
+
+/* ============================================
+   2. HEADER
+   ============================================ */
+.app-header {
     width: 100%;
-    height: 50px;
+    height: 55px;
     background-color: #f7edde;
-    box-shadow: 0 2px 8px rgba(255, 0, 0, 0.04);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    position: relative;
+    gap: 12px;
 }
 
+
+/* ============================================
+   3. LOGO
+   ============================================ */
+.logo-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
 
 .logo-img {
-    position: absolute;
-    top: 9px;
-    left: 10px;
     height: 32px;
     width: auto;
-    display: block;
     transition: transform 0.2s ease;
+}
 
+.logo-img:hover {
+    transform: scale(1.05);
 }
 
 .logo-name {
-    position: absolute;
-    top: 10px;
-    left: 45px;
-    font-size: 20px;
+    font-size: 18px;
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 2px;
+    color: #2c3e50;
 }
 
 
-.logo-img:hover {
-    transform: scale(1.05)
-}
-
-.btn {
-    width: auto;
-    height: auto;   
-    align-content: center;
-    border: 1px solid black;
-    background-color: #e5dfd7;
-    padding: 5px;
-    border-radius: 4px;
-    transition: transform 0.2s ease;
-    height: 30px;
-}
-
-.btn:hover, .fa-calendar:hover {
-    background: #fff;
-    transform: scale(1.05)
-}
-
-.login {
+/* ============================================
+   4. RANK BAR
+   ============================================ */
+.rank-bar {
     position: absolute;
-    top: 10px;
-    right: 25px;
-}
-
-.user {
-    position: absolute;
-    top: 10px;
-    right: 102px;
-}
-
-.fa-calendar {
-    position: absolute;
-    top: 10px;
-    right: 169px;
+    left: 50%;
+    transform: translateX(-50%);
     display: flex;
-    font-size: 30px;
-    border-radius: 10px;
-    color: #333;
+    align-items: center;
+    gap: 10px;
+    pointer-events: none;
+}
+
+.rank-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #4f46e5;
+    white-space: nowrap;
+}
+
+.rank-progress-bg {
+    width: 130px;
+    height: 8px;
+    background: #ddd;
+    border-radius: 99px;
+    overflow: hidden;
+}
+
+.rank-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #818cf8, #4f46e5);
+    border-radius: 99px;
+    transition: width 0.5s ease;
+}
+
+.rank-xp {
+    font-size: 11px;
+    color: #999;
+    white-space: nowrap;
+}
+
+
+/* ============================================
+   5. NAWIGACJA
+   ============================================ */
+.header-nav {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.nav-icon {
+    font-size: 24px;
+    color: #555;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
     transition: all 0.2s ease;
 }
 
-/* mid */
+.nav-icon:hover {
+    color: #4f46e5;
+    transform: scale(1.1);
+}
 
+.btn {
+    height: 32px;
+    padding: 0 12px;
+    border: 1px solid #aaa;
+    background-color: #e5dfd7;
+    border-radius: 6px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: #333;
+    cursor: pointer;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    transition: all 0.2s ease;
+}
+
+.btn:hover {
+    background-color: #fff;
+    transform: scale(1.03);
+}
+
+
+/* ============================================
+   6. GŁÓWNA ZAWARTOŚĆ
+   ============================================ */
+.app-content {
+    display: flex;
+    justify-content: center;
+    padding: 50px 20px;
+}
+
+
+/* ============================================
+   7. TASK BAR
+   ============================================ */
 .task-bar {
-    width: 65%;
-    margin: 100px auto;
+    width: 100%;
+    max-width: 700px;
     background-color: #f7edde;
-    border-radius: 10px;
+    border-radius: 12px;
     padding: 30px;
     display: flex;
     flex-direction: column;
-    gap: 25px;
+    gap: 20px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
 }
 
-/* nagłówek */
 .task-bar-head {
     text-align: center;
-    font-size: 24px;
+    font-size: 22px;
+    font-weight: 700;
+    color: #2c3e50;
 }
 
-/* lista */
+.add-task-btn {
+    width: 100%;
+    padding: 10px;
+    background: #4f46e5;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.add-task-btn:hover {
+    background: #4338ca;
+}
+
+
+/* ============================================
+   8. LISTA ZADAŃ
+   ============================================ */
 .list-group {
     list-style: none;
-    padding: 0;
-    margin: 0;
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 12px;
 }
 
-/* kafelek */
 .my-task {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px 20px;
+    padding: 14px 18px;
     background: white;
-    border-radius: 8px;
-    border: 1px solid #ddd;
+    border-radius: 10px;
+    border: 1px solid #e5e5e5;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+    transition: box-shadow 0.2s ease;
 }
 
-/* lewa strona */
+.my-task:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
 .task-left {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
+    flex-wrap: wrap;
 }
 
-/* prawa strona (przyciski) */
+.task-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.task-title.done {
+    color: #aaa;
+}
+
+.badge {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 99px;
+}
+
+.badge-type {
+    background: #e5e7eb;
+    color: #555;
+}
+
+.badge-streak {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.badge-weekly {
+    background: #e0f2fe;
+    color: #0369a1;
+}
+
+.task-empty {
+    text-align: center;
+    color: #aaa;
+    font-size: 14px;
+    padding: 20px 0;
+}
+
 .task-actions {
     display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+
+/* ============================================
+   9. PRZYCISKI ZADAŃ
+   ============================================ */
+.btn-task {
+    height: 32px;
+    padding: 0 12px;
+    border-radius: 8px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s ease;
+}
+
+.btn-done {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.btn-todo {
+    background: #f3f4f6;
+    color: #374151;
+    border: 1px solid #d1d5db;
+}
+
+.btn-todo:hover {
+    background: #e5e7eb;
+}
+
+.btn-delete {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.btn-delete:hover {
+    background: #fca5a5;
+}
+
+.btn-note {
+    background: #eff6ff;
+    color: #1e40af;
+    border: 1px solid #bfdbfe;
+}
+
+.btn-note:hover {
+    background: #dbeafe;
+}
+
+.btn-task:disabled {
+    cursor: default;
+    opacity: 0.85;
+}
+
+
+/* ============================================
+   10. MODAL ZADAŃ
+   ============================================ */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(4px);
+    z-index: 100;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+.modal-box {
+    background: white;
+    width: 100%;
+    max-width: 440px;
+    margin: 0 16px;
+    border-radius: 20px;
+    padding: 32px;
+    position: relative;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+}
+
+.modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: none;
+    border: none;
+    font-size: 18px;
+    color: #aaa;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.modal-close:hover {
+    color: #333;
+}
+
+.modal-title {
+    font-size: 20px;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 24px;
+    color: #2c3e50;
+}
+
+.modal-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.form-group label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #555;
+}
+
+.form-input {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+    outline: none;
+    transition: border 0.2s;
+}
+
+.form-input:focus {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.modal-submit {
+    width: 100%;
+    padding: 12px;
+    background: #4f46e5;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.modal-submit:hover {
+    background: #4338ca;
+}
+
+
+/* ============================================
+   11. MODAL NOTATEK
+   ============================================ */
+
+.note-modal-box {
+    max-width: 860px;
+    width: calc(100vw - 48px);
+    padding: 36px 36px 32px;
+    border-radius: 24px;
+}
+
+.note-modal-box .modal-title {
+    font-size: 22px;
+    margin-bottom: 28px;
+    letter-spacing: -0.3px;
+}
+
+/* Dwukolumnowy układ */
+.note-modal-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    align-items: start;
+}
+
+/* --- LEWA KOLUMNA: formularz --- */
+.note-form-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding-right: 0;
+}
+
+.note-form-panel .form-group label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #9ca3af;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+}
+
+.note-form-panel .form-input {
+    border-radius: 12px;
+    border: 1.5px solid #e5e7eb;
+    background: #fafafa;
+    font-size: 14px;
+    transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+}
+
+.note-form-panel .form-input:focus {
+    background: #fff;
+    border-color: #6366f1;
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.08);
+}
+
+.note-textarea {
+    resize: none;
+    min-height: 148px;
+    line-height: 1.6;
+}
+
+.note-save-btn {
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    padding: 13px;
+    box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
+    transition: all 0.2s ease;
+}
+
+.note-save-btn:hover {
+    background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
+    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.45);
+    transform: translateY(-1px);
+}
+
+.note-save-msg {
+    text-align: center;
+    font-size: 12px;
+    color: #059669;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    padding: 2px 0;
+    animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* --- PRAWA KOLUMNA: lista notatek --- */
+.note-list-panel {
+    border-left: 1.5px solid #ececf5;
+    padding-left: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    min-height: 280px;
+    overflow: visible;
+}
+
+.note-list-heading {
+    font-size: 10px;
+    font-weight: 800;
+    color: #b0b0c0;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 2px;
+}
+
+/* Scrollowalna lista */
+.note-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 300px;
+    overflow-y: auto;
+    overflow-x: visible;
+    padding: 2px 6px 2px 2px;
+}
+
+.note-list::-webkit-scrollbar { width: 3px; }
+.note-list::-webkit-scrollbar-track { background: transparent; }
+.note-list::-webkit-scrollbar-thumb {
+    background: #e5e7eb;
+    border-radius: 99px;
+}
+
+/* Placeholder */
+.note-list-empty {
+    font-size: 13px;
+    color: #d1d5db;
+    text-align: center;
+    padding: 40px 0 20px;
+    font-style: italic;
+    line-height: 1.6;
+}
+
+/* Wiersz notatki */
+.note-list-item { list-style: none; }
+
+.note-list-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
     gap: 10px;
+    padding: 11px 14px;
+    background: #f4f5ff;
+    border: 1.5px solid #d0d5f5;
+    border-radius: 12px;
+    cursor: pointer;
+    text-align: left;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: #2c3e50;
+    transition: all 0.15s ease;
+    box-shadow: 0 2px 6px rgba(79, 70, 229, 0.08);
+}
+
+.note-list-btn:hover {
+    background: #eef2ff;
+    border-color: #a5b4fc;
+    color: #4338ca;
+    transform: translateX(2px);
+    box-shadow: 0 3px 12px rgba(99, 102, 241, 0.18);
+}
+
+.note-list-icon {
+    font-size: 15px;
+    flex-shrink: 0;
+    opacity: 0.75;
+}
+
+.note-list-title-text {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.note-list-arrow {
+    font-size: 20px;
+    color: #d1d5db;
+    flex-shrink: 0;
+    line-height: 1;
+    transition: color 0.15s, transform 0.15s;
+}
+
+.note-list-btn:hover .note-list-arrow {
+    color: #818cf8;
+    transform: translateX(2px);
+}
+
+/* --- MODAL SZCZEGÓŁÓW NOTATKI --- */
+.note-detail-box {
+    max-width: 500px;
+    padding: 36px;
+}
+
+.note-detail-box .modal-title {
+    font-size: 18px;
+    color: #1e1b4b;
+    margin-bottom: 20px;
+    padding-right: 24px;
+    text-align: left;
+    line-height: 1.4;
+}
+
+.note-detail-content {
+    font-size: 14px;
+    color: #4b5563;
+    line-height: 1.75;
+    white-space: pre-wrap;
+    background: #f8f9ff;
+    border: 1.5px solid #e8eaff;
+    border-radius: 14px;
+    padding: 18px 20px;
+    min-height: 110px;
+    margin-bottom: 20px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.note-delete-btn {
+    width: 100%;
+    padding: 11px;
+    font-size: 13px;
+    font-weight: 700;
+    border-radius: 12px;
+    background: #fff0f0;
+    color: #b91c1c;
+    border: 1.5px solid #fecaca;
+    transition: all 0.2s;
+}
+
+.note-delete-btn:hover {
+    background: #fee2e2;
+    border-color: #f87171;
+}
+
+/* Responsywność */
+@media (max-width: 680px) {
+    .note-modal-box {
+        padding: 24px 20px;
+        border-radius: 18px;
+    }
+
+    .note-modal-body {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+
+    .note-form-panel {
+        padding-right: 0;
+    }
+
+    .note-list-panel {
+        border-left: none;
+        border-top: 1.5px solid #ececf5;
+        padding-left: 0;
+        padding-top: 24px;
+    }
 }
