@@ -8,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://kit.fontawesome.com/e00b0940e0.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 </head>
 <body>
 <div class="app">
@@ -42,6 +43,24 @@
         <div class="task-bar">
 
             <h1 class="task-bar-head">Dzisiejsze zadania</h1>
+
+            <!-- Dzienny pasek postępu -->
+            <div class="day-progress-wrap">
+                <div class="day-progress-header">
+                    <span class="day-progress-label">
+                        {% if day_progress == 100 %}🎉 Wszystko zrobione!
+                        {% elif day_progress >= 50 %}💪 Dobra robota!
+                        {% elif tasks_total == 0 %}📋 Dodaj pierwsze zadanie
+                        {% else %}🚀 Do dzieła!{% endif %}
+                    </span>
+                    <span class="day-progress-count">{{ tasks_done }}/{{ tasks_total }}</span>
+                </div>
+                <div class="day-progress-bg">
+                    <div class="day-progress-fill {% if day_progress == 100 %}day-progress-complete{% endif %}"
+                         data-width="{{ day_progress }}" style="width: 0%"></div>
+                </div>
+                <span class="day-progress-pct" id="day-pct-text">0%</span>
+            </div>
 
             <button onclick="openModal()" class="add-task-btn">
                 ➕ Dodaj zadanie
@@ -325,6 +344,35 @@ function escapeHtml(str) {
         .replace(/'/g, "&#39;");
 }
 
+// ===== DZIENNY PASEK POSTĘPU =====
+document.addEventListener("DOMContentLoaded", function () {
+    const fill = document.querySelector(".day-progress-fill");
+    const pctText = document.getElementById("day-pct-text");
+    if (!fill) return;
+
+    const target = parseInt(fill.dataset.width || "0", 10);
+
+    // krótkie opóźnienie żeby przeglądarka zdążyła wyrenderować width: 0
+    setTimeout(() => {
+        fill.style.width = target + "%";
+    }, 120);
+
+    // licznik cyfr od 0 do target
+    const duration = 900; // ms
+    const startTime = performance.now();
+
+    function tick(now) {
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        // easing: easeOutCubic
+        const eased = 1 - Math.pow(1 - progress, 3);
+        const current = Math.round(eased * target);
+        if (pctText) pctText.textContent = current + "%";
+        if (progress < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+});
+
 // ===== MODAL ZADAŃ =====
 
 function openModal() {
@@ -358,8 +406,49 @@ document.addEventListener("DOMContentLoaded", function () {
 
     typeField.addEventListener("change", toggleFields);
     toggleFields();
+
+    // ===== FLATPICKR — wybór daty =====
+    flatpickr("#id_date", {
+        locale: "pl",
+        dateFormat: "d.m.Y",
+        minDate: "today",
+        disableMobile: false,
+        allowInput: false,
+        nextArrow: "›",
+        prevArrow: "‹",
+        onReady: function(_, __, fp) {
+            fp.calendarContainer.classList.add("habitly-cal");
+        }
+    });
+
+    // ===== ANIMACJA PASKA POSTĘPU =====
+    const fill = document.querySelector(".day-progress-fill");
+    if (fill) {
+        const target = fill.dataset.width || "0";
+        // krótkie opóźnienie — przeglądarka zdąży wyrenderować width:0
+        setTimeout(() => {
+            fill.style.transition = "width 0.85s cubic-bezier(0.34, 1.56, 0.64, 1)";
+            fill.style.width = target + "%";
+        }, 120);
+
+        // animacja licznika procentowego
+        const pctEl = document.getElementById("day-pct-text");
+        if (pctEl && parseInt(target) > 0) {
+            const end = parseInt(target);
+            const duration = 800;
+            const step = 16;
+            let current = 0;
+            const timer = setInterval(() => {
+                current = Math.min(current + Math.ceil(end / (duration / step)), end);
+                pctEl.textContent = current + "%";
+                if (current >= end) clearInterval(timer);
+            }, step);
+        }
+    }
 });
 </script>
 
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pl.js"></script>
 </body>
 </html>

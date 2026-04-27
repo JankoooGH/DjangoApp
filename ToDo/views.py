@@ -72,14 +72,22 @@ def home(request):
             task.save()
         return redirect('home')
 
+    tasks_list = list(tasks)
+    tasks_total = len(tasks_list)
+    tasks_done = sum(1 for t in tasks_list if t.is_done_today())
+    day_progress = int((tasks_done / tasks_total) * 100) if tasks_total > 0 else 0
+
     context = {
-        'tasks': tasks,
+        'tasks': tasks_list,
         'form': form,
         'profile': profile,
         'rank_icon': profile.rank()[0],
         'rank_name': profile.rank()[1],
         'progress': profile.rank_progress_percent(),
         'xp_to_next': profile.xp_to_next_rank(),
+        'tasks_total': tasks_total,
+        'tasks_done': tasks_done,
+        'day_progress': day_progress,
     }
     return render(request, 'ToDo/main.html', context)
 

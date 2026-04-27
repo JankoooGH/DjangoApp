@@ -220,6 +220,99 @@ body {
 
 
 /* ============================================
+   DZIENNY PASEK POSTĘPU
+   ============================================ */
+
+.day-progress-wrap {
+    background: white;
+    border-radius: 14px;
+    padding: 16px 20px;
+    border: 1px solid #e9eaf0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.day-progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.day-progress-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: #4b5563;
+}
+
+.day-progress-count {
+    font-size: 12px;
+    font-weight: 700;
+    color: #9ca3af;
+    letter-spacing: 0.03em;
+}
+
+.day-progress-bg {
+    width: 100%;
+    height: 10px;
+    background: #f0f0f5;
+    border-radius: 99px;
+    overflow: hidden;
+}
+
+.day-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #818cf8, #4f46e5);
+    border-radius: 99px;
+    transition: width 0.85s cubic-bezier(0.34, 1.56, 0.64, 1);
+    min-width: 0;
+    position: relative;
+    overflow: hidden;
+}
+
+/* shimmer przejeżdżający po pasku */
+.day-progress-fill::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255,255,255,0.45) 50%,
+        transparent 100%
+    );
+    transform: translateX(-100%);
+    animation: shimmer 1.4s ease 0.2s 1 forwards;
+}
+
+@keyframes shimmer {
+    0%   { transform: translateX(-100%); opacity: 1; }
+    100% { transform: translateX(200%);  opacity: 0; }
+}
+
+.day-progress-fill.day-progress-complete {
+    background: linear-gradient(90deg, #34d399, #059669);
+    box-shadow: 0 0 12px rgba(5, 150, 105, 0.4);
+    animation: pulse-green 1.8s ease 0.9s 1;
+}
+
+@keyframes pulse-green {
+    0%   { box-shadow: 0 0 0   rgba(5, 150, 105, 0); }
+    50%  { box-shadow: 0 0 18px rgba(5, 150, 105, 0.55); }
+    100% { box-shadow: 0 0 12px rgba(5, 150, 105, 0.4); }
+}
+
+.day-progress-pct {
+    font-size: 11px;
+    font-weight: 800;
+    color: #6366f1;
+    text-align: right;
+    letter-spacing: 0.02em;
+}
+
+
+/* ============================================
    8. LISTA ZADAŃ
    ============================================ */
 .list-group {
@@ -725,4 +818,132 @@ body {
         padding-left: 0;
         padding-top: 24px;
     }
+}
+
+
+/* ============================================
+   FLATPICKR — custom style kalendarza
+   ============================================ */
+
+.flatpickr-input {
+    cursor: pointer !important;
+    background: #fafafa url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236366f1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='4' width='18' height='18' rx='2' ry='2'%3E%3C/rect%3E%3Cline x1='16' y1='2' x2='16' y2='6'%3E%3C/line%3E%3Cline x1='8' y1='2' x2='8' y2='6'%3E%3C/line%3E%3Cline x1='3' y1='10' x2='21' y2='10'%3E%3C/line%3E%3C/svg%3E") no-repeat calc(100% - 12px) center !important;
+    padding-right: 36px !important;
+}
+
+.flatpickr-input:focus {
+    border-color: #6366f1 !important;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1) !important;
+}
+
+/* Kontener kalendarza */
+.flatpickr-calendar {
+    font-family: 'Montserrat', sans-serif !important;
+    border-radius: 16px !important;
+    border: none !important;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15), 0 4px 16px rgba(99,102,241,0.1) !important;
+    padding: 8px !important;
+    width: 300px !important;
+}
+
+/* Nagłówek miesiąca */
+.flatpickr-months {
+    padding: 8px 4px 4px !important;
+    align-items: center;
+}
+
+.flatpickr-month {
+    height: 36px !important;
+}
+
+.flatpickr-current-month {
+    font-size: 15px !important;
+    font-weight: 700 !important;
+    color: #2c3e50 !important;
+    padding-top: 4px !important;
+}
+
+.flatpickr-current-month .flatpickr-monthDropdown-months {
+    font-weight: 700;
+    color: #2c3e50;
+}
+
+/* Strzałki nawigacji */
+.flatpickr-prev-month,
+.flatpickr-next-month {
+    color: #6366f1 !important;
+    fill: #6366f1 !important;
+    font-size: 20px !important;
+    padding: 6px 10px !important;
+    border-radius: 8px !important;
+    transition: background 0.15s;
+}
+
+.flatpickr-prev-month:hover,
+.flatpickr-next-month:hover {
+    background: #eef2ff !important;
+    color: #4338ca !important;
+}
+
+/* Nazwy dni tygodnia */
+.flatpickr-weekdays {
+    margin-top: 6px;
+}
+
+.flatpickr-weekday {
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    color: #9ca3af !important;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Dni */
+.flatpickr-day {
+    font-family: 'Montserrat', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    color: #374151 !important;
+    border-radius: 10px !important;
+    height: 36px !important;
+    line-height: 36px !important;
+    border: none !important;
+    transition: all 0.15s ease !important;
+}
+
+.flatpickr-day:hover {
+    background: #eef2ff !important;
+    color: #4338ca !important;
+}
+
+/* Wybrany dzień */
+.flatpickr-day.selected,
+.flatpickr-day.selected:hover {
+    background: linear-gradient(135deg, #6366f1, #4f46e5) !important;
+    color: white !important;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4) !important;
+    transform: scale(1.08);
+}
+
+/* Dzisiaj */
+.flatpickr-day.today {
+    border: 2px solid #6366f1 !important;
+    color: #4f46e5 !important;
+    background: #f0f0ff !important;
+}
+
+.flatpickr-day.today:hover {
+    background: #eef2ff !important;
+}
+
+/* Dni spoza miesiąca */
+.flatpickr-day.prevMonthDay,
+.flatpickr-day.nextMonthDay {
+    color: #d1d5db !important;
+}
+
+/* Wyłączone dni (minDate) */
+.flatpickr-day.flatpickr-disabled {
+    color: #e5e7eb !important;
+    cursor: not-allowed !important;
 }
