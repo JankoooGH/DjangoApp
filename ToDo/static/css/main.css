@@ -1,32 +1,174 @@
 /* ============================================
    HABITLY — main.css
-   1. Reset & Base
-   2. Header
-   3. Logo
-   4. Rank Bar
-   5. Nawigacja
-   6. Główna zawartość
-   7. Task Bar
-   8. Lista zadań
-   9. Przyciski zadań
-   10. Modal (zadań)
-   11. Modal Notatek
+   1. Fonts
+   2. CSS Variables (dark default)
+   3. Light mode
+   4. Base styles
+   5. Utility classes
+   6. Layout (App shell)
+   7. Sidebar
+   8. Main content
    ============================================ */
 
 
 /* ============================================
-   1. RESET & BASE
+   1. FONTS
    ============================================ */
-* {
+@import url("https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Manrope:wght@300;400;500;600;700&display=swap");
+
+
+/* ============================================
+   2. CSS VARIABLES — dark (default)
+   ============================================ */
+:root {
+    /* Radius */
+    --radius: 0.875rem;
+    --radius-sm: calc(var(--radius) - 4px);
+    --radius-md: calc(var(--radius) - 2px);
+    --radius-lg: var(--radius);
+    --radius-xl: calc(var(--radius) + 4px);
+
+    /* Backgrounds */
+    --background:   oklch(0.13 0.04 280);
+    --card:         oklch(0.18 0.05 275);
+    --secondary:    oklch(0.24 0.07 275);
+    --muted:        oklch(0.22 0.05 275);
+    --input:        oklch(0.24 0.06 275);
+
+    /* Sidebar */
+    --sidebar:              oklch(0.15 0.05 278);
+    --sidebar-accent:       oklch(0.22 0.06 275);
+    --sidebar-border:       oklch(0.26 0.06 275);
+
+    /* Text */
+    --foreground:           oklch(0.97 0.01 270);
+    --muted-foreground:     oklch(0.70 0.04 270);
+    --sidebar-foreground:   oklch(0.92 0.02 270);
+
+    /* Accent colors */
+    --primary:      oklch(0.62 0.22 275);   /* fiolet główny */
+    --accent:       oklch(0.60 0.24 305);   /* fiolet-róż */
+    --glow:         oklch(0.75 0.20 290);   /* poświata */
+    --success:      oklch(0.72 0.18 155);   /* zielony (task done) */
+    --warning:      oklch(0.82 0.17  80);   /* żółty */
+    --destructive: oklch(0.619 0.24 24.876);   /* czerwony (usuń) */
+
+    /* Border */
+    --border: oklch(0.28 0.06 275);
+
+    /* Font */
+    --spacing: .25rem;
+
+    --text-xs: .75rem; /* 9px */
+    --text-xs--line-height: calc(1 / .75);
+    --text-sm: .875rem;
+    --text-sm--line-height: calc(1.25 / .875);
+    --text-base: 1rem;
+    --text-base--line-height: 1.5;
+    --text-lg: 1.125rem; /* 13.5px */
+    --text-lg--line-height: calc(1.75 / 1.125);
+    --text-xl: 1.25rem;
+    --text-xl--line-height: calc(1.75 / 1.25);
+    --text-2xl: 1.5rem;
+    --text-2xl--line-height: calc(2 / 1.5);
+
+    --font-weight-normal: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+
+    /* Kolory nawyków */
+    --habit-indigo: #7c6ff7;
+    --habit-purple: #b06ef3;
+    --habit-pink:   #f06292;
+    --habit-teal:   #26c6da;
+    --habit-orange: #ffa726;
+    --habit-cyan:   #29b6f6;
+    --habit-red:    #ef5350;
+    --habit-green:  #66bb6a;
+
+}
+.accent-indigo { background: var(--habit-indigo); }
+.accent-purple  { background: var(--habit-purple); }
+.accent-pink    { background: var(--habit-pink); }
+.accent-teal    { background: var(--habit-teal); }
+.accent-orange  { background: var(--habit-orange); }
+.accent-cyan    { background: var(--habit-cyan); }
+.accent-red     { background: var(--habit-red); }
+.accent-green   { background: var(--habit-green); }
+
+
+/* ============================================
+   3. LIGHT MODE
+   ============================================ */
+.light {
+    --background:   oklch(0.98 0.01 280);
+    --card:         oklch(1.00 0.00   0);
+    --secondary:    oklch(0.95 0.02 275);
+    --muted:        oklch(0.95 0.02 275);
+    --input:        oklch(0.93 0.02 275);
+
+    --sidebar:              oklch(0.97 0.015 278);
+    --sidebar-accent:       oklch(0.93 0.025 275);
+    --sidebar-border:       oklch(0.90 0.02  275);
+
+    --foreground:           oklch(0.18 0.04 275);
+    --muted-foreground:     oklch(0.45 0.04 275);
+    --sidebar-foreground:   oklch(0.22 0.04 275);
+
+    --primary:      oklch(0.55 0.22 275);
+    --accent:       oklch(0.58 0.24 305);
+    --glow:         oklch(0.65 0.22 290);
+    --success:      oklch(0.55 0.18 155);
+    --warning:      oklch(0.68 0.17  70);
+    --destructive:  oklch(0.58 0.24  25);
+
+    --border: oklch(0.90 0.02 275);
+}
+
+
+/* ============================================
+   4. BASE STYLES
+   ============================================ */
+*, *::before, *::after {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+    border-color: var(--border);
 }
 
 body {
-    font-family: 'Montserrat', sans-serif;
-    background-color: #e5dfd7;
+    font-family: 'Sora', sans-serif;
+    background-color: var(--background);
+    color: var(--foreground);
     min-height: 100vh;
+
+    /* fioletowy blask w rogach */
+    background-image:
+        radial-gradient(circle at 15% 10%, oklch(0.25 0.12 280 / 0.6), transparent 50%),
+        radial-gradient(circle at 85% 90%, oklch(0.30 0.18 305 / 0.45), transparent 55%);
+    background-attachment: fixed;
+}
+
+body.light {
+    background-image:
+        radial-gradient(circle at 15% 10%, oklch(0.85 0.10 280 / 0.5), transparent 50%),
+        radial-gradient(circle at 85% 90%, oklch(0.88 0.12 305 / 0.4), transparent 55%);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Sora', sans-serif;
+    letter-spacing: -0.02em;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+button {
+    cursor: pointer;
+    font-family: 'Manrope', sans-serif;
 }
 
 .hidden {
@@ -35,235 +177,350 @@ body {
 
 
 /* ============================================
-   2. HEADER
+   5. UTILITY CLASSES
    ============================================ */
-.app-header {
-    width: 100%;
-    height: 55px;
-    background-color: #f7edde;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-    display: flex;
-    align-items: center;
-    padding: 0 20px;
-    position: relative;
-    gap: 12px;
+
+/* szklana karta */
+.glass {
+    background: color-mix(in oklab, var(--card) 70%, transparent);
+    backdrop-filter: blur(14px);
+    border: 1px solid color-mix(in oklab, var(--border) 80%, transparent);
+}
+
+/* fioletowy gradient (przyciski, akcenty) */
+.gradient-primary {
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+}
+
+/* gradient tekst */
+.text-gradient {
+    background: linear-gradient(135deg, var(--glow), var(--accent));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+/* poświata dookoła elementu */
+.glow-ring {
+    box-shadow:
+        0 0 0 1px color-mix(in oklab, var(--primary) 40%, transparent),
+        0 10px 40px -10px color-mix(in oklab, var(--primary) 60%, transparent);
 }
 
 
 /* ============================================
-   3. LOGO
+   6. LAYOUT — App shell (sidebar + content)
    ============================================ */
-.logo-bar {
+.app {
     display: flex;
-    align-items: center;
-    gap: 8px;
+    min-height: 100vh;
+}
+
+
+/* ============================================
+   7. SIDEBAR
+   ============================================ */
+.sidebar {
+    width: 280px;
     flex-shrink: 0;
-}
-
-.logo-img {
-    height: 32px;
-    width: auto;
-    transition: transform 0.2s ease;
-}
-
-.logo-img:hover {
-    transform: scale(1.05);
-}
-
-.logo-name {
-    font-size: 18px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    color: #2c3e50;
-}
-
-
-/* ============================================
-   4. RANK BAR
-   ============================================ */
-.rank-bar {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    pointer-events: none;
-}
-
-.rank-label {
-    font-size: 13px;
-    font-weight: 600;
-    color: #4f46e5;
-    white-space: nowrap;
-}
-
-.rank-progress-bg {
-    width: 130px;
-    height: 8px;
-    background: #ddd;
-    border-radius: 99px;
-    overflow: hidden;
-}
-
-.rank-progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, #818cf8, #4f46e5);
-    border-radius: 99px;
-    transition: width 0.5s ease;
-}
-
-.rank-xp {
-    font-size: 11px;
-    color: #999;
-    white-space: nowrap;
-}
-
-
-/* ============================================
-   5. NAWIGACJA
-   ============================================ */
-.header-nav {
-    margin-left: auto;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.nav-icon {
-    font-size: 24px;
-    color: #555;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    transition: all 0.2s ease;
-}
-
-.nav-icon:hover {
-    color: #4f46e5;
-    transform: scale(1.1);
-}
-
-.btn {
-    height: 32px;
-    padding: 0 12px;
-    border: 1px solid #aaa;
-    background-color: #e5dfd7;
-    border-radius: 6px;
-    font-family: 'Montserrat', sans-serif;
-    font-size: 13px;
-    font-weight: 600;
-    color: #333;
-    cursor: pointer;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    transition: all 0.2s ease;
-}
-
-.btn:hover {
-    background-color: #fff;
-    transform: scale(1.03);
-}
-
-
-/* ============================================
-   6. GŁÓWNA ZAWARTOŚĆ
-   ============================================ */
-.app-content {
-    display: flex;
-    justify-content: center;
-    padding: 50px 20px;
-}
-
-
-/* ============================================
-   7. TASK BAR
-   ============================================ */
-.task-bar {
-    width: 100%;
-    max-width: 700px;
-    background-color: #f7edde;
-    border-radius: 12px;
-    padding: 30px;
+    background-color: var(--sidebar);
+    border-right: 1px solid var(--sidebar-border);
     display: flex;
     flex-direction: column;
-    gap: 20px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+    padding: 24px 16px;
+    gap: 8px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    overflow-y: auto;
 }
 
-.task-bar-head {
+/* Logo */
+.sidebar__logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 8px;
+  margin-bottom: 28px;
+}
+.sidebar__logo-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--primary) 40%, transparent),
+              0 8px 24px -8px color-mix(in oklab, var(--primary) 60%, transparent);
+}
+.sidebar__logo-name {
+  font-family: "Sora", ui-sans-serif, system-ui, sans-serif;
+  font-weight: 800;
+  font-size: 17px;
+  letter-spacing: 0.04em;
+}
+
+/* User info w sidebarze */
+
+.user-card {
+  background: color-mix(in oklab, var(--card) 60%, transparent);
+  border: 1px solid color-mix(in oklab, var(--border) 60%, transparent);
+  border-radius: var(--radius);
+  color: var(--muted-foreground);
+  padding: 14px;
+  margin-bottom: 24px;
+}
+
+.user-card__top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.user-card__avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+.user-card__name {
+    font-weight: 700;
+    font-size: var(--text-lg);
+    color: var(--foreground);
+}
+.user-card__level {
+  font-size: var(--text-xs);
+  color: var(--muted-foreground);
+  margin-top: 1px;
+}
+.xp-bar-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--text-xs);
+  color: var(--muted-foreground);
+  margin-bottom: 5px;
+}
+
+.xp-bar-track {
+  height: 5px;
+  background: var(--muted);
+  border-radius: 99px;
+  overflow: hidden;
+}
+.xp-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+  border-radius: 99px;
+  transition: width 0.4s ease;
+}
+
+/* Linki nawigacyjne */
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+}
+
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: var(--radius-md);
+    font-size: var(--text-sm);
+    font-weight: var(--font-weight-medium);
+    color: var(--foreground);
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+}
+
+.sidebar-link:hover {
+    background-color: color-mix(in oklab, var(--primary) 20%, transparent);
+    color: var(--foreground);
+    border-color: color-mix(in oklab, var(--primary) 30%, transparent);
+    border-radius: calc(var(--radius) + 4px);
+    box-shadow: 0 0 0 1px var(--primary), 0 10px 40px -10px var(--primary);
+}
+
+.sidebar-link.active {
+    background-color: color-mix(in oklab, var(--primary) 20%, transparent);
+    color: var(--foreground);
+    border-color: color-mix(in oklab, var(--primary) 30%, transparent);
+    border-radius: calc(var(--radius) + 4px);
+    box-shadow: 0 0 0 1px var(--primary), 0 10px 40px -10px var(--primary);
+}
+
+.sidebar-link i {
+    width: 16px;
     text-align: center;
-    font-size: 22px;
-    font-weight: 700;
-    color: #2c3e50;
+    font-size: 15px;
+    opacity: 0.8;
 }
 
-.add-task-btn {
-    width: 100%;
-    padding: 10px;
-    background: #4f46e5;
-    color: white;
+/* Wyloguj na dole */
+.sidebar-footer {
+    padding-top: 16px;
+    border-top: 1px solid var(--sidebar-border);
+}
+
+.sidebar-logout {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: var(--radius-md);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted-foreground);
+    background: none;
     border: none;
-    border-radius: 10px;
-    font-family: 'Montserrat', sans-serif;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.2s ease;
+    width: 100%;
+    transition: all 0.2s ease;
 }
 
-.add-task-btn:hover {
-    background: #4338ca;
+.sidebar-logout:hover {
+    color: var(--destructive);
+    background: color-mix(in oklab, var(--destructive) 10%, transparent);
 }
 
 
 /* ============================================
-   DZIENNY PASEK POSTĘPU
+   8. MAIN CONTENT
    ============================================ */
 
-.day-progress-wrap {
-    background: white;
-    border-radius: 14px;
-    padding: 16px 20px;
-    border: 1px solid #e9eaf0;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+/* ============================================
+   8.1 WELCOME
+   ============================================ */
+
+.page-header {
     display: flex;
-    flex-direction: column;
-    gap: 10px;
+    justify-content: space-between;
+    align-items: flex-start;
+    max-width: 800px;
+    margin: 0 auto 40px;
+    text-transform: capitalize;
 }
 
-.day-progress-header {
+.header-date {
+    font-size: var(--text-sm);
+    color: var(--muted-foreground);
+    text-transform: capitalize;
+    margin-bottom: 8px;
+}
+
+.header-title {
+    font-size: var(--text-4xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--foreground);
+    margin: 0;
+}
+
+/* ============================================
+   8.2 CARDS
+   ============================================ */
+
+.app-content {
+    margin-left: 280px;   /* szerokość sidebara */
+    flex: 1;
+    padding: 40px 48px;
+    min-height: 100vh;
+}
+
+.stats-grid {
+    display: flex;
+    margin: 0 auto;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 50px;
+    max-width: 800px;
+}
+
+.stat-card {
+    padding: 15px;
+    border-radius: calc(var(--radius) + 8px);
+    height: auto;
+    flex: 1;
+}
+
+.stat-card > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.stat-card p:first-of-type {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.stat-card p:last-of-type {
+    font-size: 8px;
+    color: var(--muted-foreground);
+}
+
+
+/* ============================================
+   8.3. PROGRESS
+   ============================================ */
+
+.progress-bar-wrap {
+    display: flex;
+    flex-direction: column;
+    max-width: 800px;
+    margin: 0 auto;
+    height: auto;
+    padding: 15px 15px;
+}
+.progress-bar-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.day-progress-label {
-    font-size: 13px;
-    font-weight: 700;
-    color: #4b5563;
+
+.progress-bar-label {
+    color: var(--foreground);
 }
 
-.day-progress-count {
+.progress-bar-label h2{
+    font-size: var(--text-lg);
+    font-weight: var(--font-weight-semibold);
+}
+
+#day-message{
+    font-size: var(--text-xs);
+    color: var(--muted-foreground)
+}
+
+.progress-bar-count {
     font-size: 12px;
     font-weight: 700;
-    color: #9ca3af;
+    color: var(--muted-foreground);
     letter-spacing: 0.03em;
 }
 
-.day-progress-bg {
+.progress-bar-bg {
     width: 100%;
     height: 10px;
-    background: #f0f0f5;
+    background: var(--secondary);
     border-radius: 99px;
     overflow: hidden;
 }
 
-.day-progress-fill {
+.progress-bar-fill {
     height: 100%;
-    background: linear-gradient(90deg, #818cf8, #4f46e5);
+    background: linear-gradient(90deg, var(--primary), var(--accent));
     border-radius: 99px;
     transition: width 0.85s cubic-bezier(0.34, 1.56, 0.64, 1);
     min-width: 0;
@@ -272,7 +529,7 @@ body {
 }
 
 /* shimmer przejeżdżający po pasku */
-.day-progress-fill::after {
+.progress-bar-fill::after {
     content: '';
     position: absolute;
     inset: 0;
@@ -291,7 +548,7 @@ body {
     100% { transform: translateX(200%);  opacity: 0; }
 }
 
-.day-progress-fill.day-progress-complete {
+.progress-bar-fill.progress-bar-complete {
     background: linear-gradient(90deg, #34d399, #059669);
     box-shadow: 0 0 12px rgba(5, 150, 105, 0.4);
     animation: pulse-green 1.8s ease 0.9s 1;
@@ -299,651 +556,153 @@ body {
 
 @keyframes pulse-green {
     0%   { box-shadow: 0 0 0   rgba(5, 150, 105, 0); }
-    50%  { box-shadow: 0 0 18px rgba(5, 150, 105, 0.55); }
-    100% { box-shadow: 0 0 12px rgba(5, 150, 105, 0.4); }
+    50%  { box-shadow: 0 0 18px var(--success); }
+    100% { box-shadow: 0 0 12px var(--success); }
 }
 
-.day-progress-pct {
+.progress-bar-pct {
     font-size: 11px;
     font-weight: 800;
-    color: #6366f1;
+    color: var(--primary);
     text-align: right;
     letter-spacing: 0.02em;
 }
 
-
 /* ============================================
-   8. LISTA ZADAŃ
+  8.4 LISTA
    ============================================ */
+
+.tasks-list {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 15px;
+}
+
+.tasks-list h1 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--foreground);
+    margin-bottom: 16px;
+}
+
 .list-group {
     list-style: none;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 10px;
 }
 
 .my-task {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 14px 18px;
-    background: white;
-    border-radius: 10px;
-    border: 1px solid #e5e5e5;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.04);
-    transition: box-shadow 0.2s ease;
+    padding: 16px 20px;
+    border-radius: calc(var(--radius) + 8px);
+    border: 1px solid var(--border);
+    transition: all 0.2s ease;
+    text-transform: capitalize;
+}
+
+.my-task--done{
+    background: rgba(0, 200, 100, 0.08);
+    border: 1px solid rgba(0, 200, 100, 0.4);
+    box-shadow: 0 0 12px rgba(0, 200, 100, 0.15);
 }
 
 .my-task:hover {
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    border-color: color-mix(in oklab, var(--primary) 40%, transparent);
 }
 
 .task-left {
     display: flex;
     align-items: center;
-    gap: 8px;
-    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.task-checkbox {
+    width: 34px;
+    height: 34px;
+    border-style: var(--tw-border-style);
+    border-width: 2px;
+    border-radius: var(--radius);
+    border: 2px solid var(--border);
+    background: transparent;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+}
+
+.task-checkbox.checked {
+    background: var(--success);
+    border-color: var(--success);
 }
 
 .task-title {
     font-size: 15px;
     font-weight: 600;
-    color: #2c3e50;
+    color: var(--foreground);
 }
 
 .task-title.done {
-    color: #aaa;
+    color: var(--muted-foreground);
 }
 
 .badge {
     font-size: 11px;
-    font-weight: 600;
-    padding: 3px 8px;
+    font-weight: 700;
+    padding: 3px 10px;
     border-radius: 99px;
 }
 
 .badge-type {
-    background: #e5e7eb;
-    color: #555;
-}
-
-.badge-streak {
-    background: #fef3c7;
-    color: #92400e;
+    background: color-mix(in oklab, var(--warning) 20%, transparent);
+    color: var(--warning);
 }
 
 .badge-weekly {
-    background: #e0f2fe;
-    color: #0369a1;
+    background: color-mix(in oklab, var(--primary) 20%, transparent);
+    color: var(--primary);
+}
+
+.task-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+}
+
+.task-xp {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.task-streak {
+    font-size: 12px;
+    color: var(--warning);
 }
 
 .task-empty {
     text-align: center;
-    color: #aaa;
+    color: var(--muted-foreground);
+    padding: 30px 0;
     font-size: 14px;
-    padding: 20px 0;
 }
 
-.task-actions {
-    display: flex;
-    gap: 8px;
-    flex-shrink: 0;
-}
-
-
-/* ============================================
-   9. PRZYCISKI ZADAŃ
-   ============================================ */
-.btn-task {
-    height: 32px;
-    padding: 0 12px;
-    border-radius: 8px;
-    font-family: 'Montserrat', sans-serif;
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    border: none;
-    transition: all 0.2s ease;
-}
-
-.btn-done {
-    background: #d1fae5;
-    color: #065f46;
-}
-
-.btn-todo {
-    background: #f3f4f6;
-    color: #374151;
-    border: 1px solid #d1d5db;
-}
-
-.btn-todo:hover {
-    background: #e5e7eb;
-}
-
-.btn-delete {
-    background: #fee2e2;
-    color: #991b1b;
-}
-
-.btn-delete:hover {
-    background: #fca5a5;
-}
-
-.btn-note {
-    background: #eff6ff;
-    color: #1e40af;
-    border: 1px solid #bfdbfe;
-}
-
-.btn-note:hover {
-    background: #dbeafe;
-}
-
-.btn-task:disabled {
-    cursor: default;
-    opacity: 0.85;
-}
-
-
-/* ============================================
-   10. MODAL ZADAŃ
-   ============================================ */
-.modal-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.45);
-    backdrop-filter: blur(4px);
-    z-index: 100;
-    justify-content: center;
-    align-items: center;
-}
-
-.modal-overlay.active {
-    display: flex;
-}
-
-.modal-box {
-    background: white;
-    width: 100%;
-    max-width: 440px;
-    margin: 0 16px;
-    border-radius: 20px;
-    padding: 32px;
-    position: relative;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
-}
-
-.modal-close {
-    position: absolute;
-    top: 16px;
-    right: 16px;
-    background: none;
-    border: none;
-    font-size: 18px;
-    color: #aaa;
-    cursor: pointer;
-    transition: color 0.2s;
-}
-
-.modal-close:hover {
-    color: #333;
-}
-
-.modal-title {
-    font-size: 20px;
-    font-weight: 700;
-    text-align: center;
-    margin-bottom: 24px;
-    color: #2c3e50;
-}
-
-.modal-form {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-}
-
-.form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
-.form-group label {
-    font-size: 13px;
-    font-weight: 600;
-    color: #555;
-}
-
-.form-input {
-    width: 100%;
-    padding: 10px 14px;
-    border: 1px solid #d1d5db;
-    border-radius: 10px;
-    font-family: 'Montserrat', sans-serif;
-    font-size: 14px;
-    outline: none;
-    transition: border 0.2s;
-}
-
-.form-input:focus {
-    border-color: #6366f1;
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-}
-
-.modal-submit {
-    width: 100%;
-    padding: 12px;
-    background: #4f46e5;
-    color: white;
-    border: none;
-    border-radius: 10px;
-    font-family: 'Montserrat', sans-serif;
-    font-size: 14px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-
-.modal-submit:hover {
-    background: #4338ca;
-}
-
-
-/* ============================================
-   11. MODAL NOTATEK
-   ============================================ */
-
-.note-modal-box {
-    max-width: 860px;
-    width: calc(100vw - 48px);
-    padding: 36px 36px 32px;
-    border-radius: 24px;
-}
-
-.note-modal-box .modal-title {
-    font-size: 22px;
-    margin-bottom: 28px;
-    letter-spacing: -0.3px;
-}
-
-/* Dwukolumnowy układ */
-.note-modal-body {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 32px;
-    align-items: start;
-}
-
-/* --- LEWA KOLUMNA: formularz --- */
-.note-form-panel {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    padding-right: 0;
-}
-
-.note-form-panel .form-group label {
-    font-size: 11px;
-    font-weight: 700;
-    color: #9ca3af;
-    text-transform: uppercase;
-    letter-spacing: 0.07em;
-}
-
-.note-form-panel .form-input {
-    border-radius: 12px;
-    border: 1.5px solid #e5e7eb;
-    background: #fafafa;
-    font-size: 14px;
-    transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
-}
-
-.note-form-panel .form-input:focus {
-    background: #fff;
-    border-color: #6366f1;
-    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.08);
-}
-
-.note-textarea {
-    resize: none;
-    min-height: 148px;
-    line-height: 1.6;
-}
-
-.note-save-btn {
-    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
-    border-radius: 12px;
-    font-size: 14px;
-    font-weight: 700;
-    letter-spacing: 0.02em;
-    padding: 13px;
-    box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
-    transition: all 0.2s ease;
-}
-
-.note-save-btn:hover {
-    background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
-    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.45);
-    transform: translateY(-1px);
-}
-
-.note-save-msg {
-    text-align: center;
-    font-size: 12px;
-    color: #059669;
-    font-weight: 700;
-    letter-spacing: 0.03em;
-    padding: 2px 0;
-    animation: fadeIn 0.2s ease;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-4px); }
-    to   { opacity: 1; transform: translateY(0); }
-}
-
-/* --- PRAWA KOLUMNA: lista notatek --- */
-.note-list-panel {
-    border-left: 1.5px solid #ececf5;
-    padding-left: 32px;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    min-height: 280px;
-    overflow: visible;
-}
-
-.note-list-heading {
-    font-size: 10px;
-    font-weight: 800;
-    color: #b0b0c0;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-bottom: 2px;
-}
-
-/* Scrollowalna lista */
-.note-list {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    max-height: 300px;
-    overflow-y: auto;
-    overflow-x: visible;
-    padding: 2px 6px 2px 2px;
-}
-
-.note-list::-webkit-scrollbar { width: 3px; }
-.note-list::-webkit-scrollbar-track { background: transparent; }
-.note-list::-webkit-scrollbar-thumb {
-    background: #e5e7eb;
-    border-radius: 99px;
-}
-
-/* Placeholder */
-.note-list-empty {
-    font-size: 13px;
-    color: #d1d5db;
-    text-align: center;
-    padding: 40px 0 20px;
-    font-style: italic;
-    line-height: 1.6;
-}
-
-/* Wiersz notatki */
-.note-list-item { list-style: none; }
-
-.note-list-btn {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 11px 14px;
-    background: #f4f5ff;
-    border: 1.5px solid #d0d5f5;
-    border-radius: 12px;
-    cursor: pointer;
-    text-align: left;
-    font-family: 'Montserrat', sans-serif;
-    font-size: 13px;
-    font-weight: 600;
-    color: #2c3e50;
-    transition: all 0.15s ease;
-    box-shadow: 0 2px 6px rgba(79, 70, 229, 0.08);
-}
-
-.note-list-btn:hover {
-    background: #eef2ff;
-    border-color: #a5b4fc;
-    color: #4338ca;
-    transform: translateX(2px);
-    box-shadow: 0 3px 12px rgba(99, 102, 241, 0.18);
-}
-
-.note-list-icon {
-    font-size: 15px;
-    flex-shrink: 0;
-    opacity: 0.75;
-}
-
-.note-list-title-text {
-    flex: 1;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.note-list-arrow {
-    font-size: 20px;
-    color: #d1d5db;
-    flex-shrink: 0;
-    line-height: 1;
-    transition: color 0.15s, transform 0.15s;
-}
-
-.note-list-btn:hover .note-list-arrow {
-    color: #818cf8;
-    transform: translateX(2px);
-}
-
-/* --- MODAL SZCZEGÓŁÓW NOTATKI --- */
-.note-detail-box {
-    max-width: 500px;
-    padding: 36px;
-}
-
-.note-detail-box .modal-title {
-    font-size: 18px;
-    color: #1e1b4b;
-    margin-bottom: 20px;
-    padding-right: 24px;
-    text-align: left;
-    line-height: 1.4;
-}
-
-.note-detail-content {
-    font-size: 14px;
-    color: #4b5563;
-    line-height: 1.75;
-    white-space: pre-wrap;
-    background: #f8f9ff;
-    border: 1.5px solid #e8eaff;
-    border-radius: 14px;
-    padding: 18px 20px;
-    min-height: 110px;
-    margin-bottom: 20px;
-    font-family: 'Montserrat', sans-serif;
-}
-
-.note-delete-btn {
-    width: 100%;
-    padding: 11px;
-    font-size: 13px;
-    font-weight: 700;
-    border-radius: 12px;
-    background: #fff0f0;
-    color: #b91c1c;
-    border: 1.5px solid #fecaca;
-    transition: all 0.2s;
-}
-
-.note-delete-btn:hover {
-    background: #fee2e2;
-    border-color: #f87171;
-}
-
-/* Responsywność */
-@media (max-width: 680px) {
-    .note-modal-box {
-        padding: 24px 20px;
-        border-radius: 18px;
-    }
-
-    .note-modal-body {
-        grid-template-columns: 1fr;
-        gap: 24px;
-    }
+/* Kolory checkboxa per typ */
+.task-once .task-checkbox   { border-color: var(--warning); }
+.task-daily .task-checkbox  { border-color: var(--primary); }
+.task-weekly .task-checkbox { border-color: var(--success); }
 
-    .note-form-panel {
-        padding-right: 0;
-    }
-
-    .note-list-panel {
-        border-left: none;
-        border-top: 1.5px solid #ececf5;
-        padding-left: 0;
-        padding-top: 24px;
-    }
-}
-
-
-/* ============================================
-   FLATPICKR — custom style kalendarza
-   ============================================ */
-
-.flatpickr-input {
-    cursor: pointer !important;
-    background: #fafafa url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236366f1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='4' width='18' height='18' rx='2' ry='2'%3E%3C/rect%3E%3Cline x1='16' y1='2' x2='16' y2='6'%3E%3C/line%3E%3Cline x1='8' y1='2' x2='8' y2='6'%3E%3C/line%3E%3Cline x1='3' y1='10' x2='21' y2='10'%3E%3C/line%3E%3C/svg%3E") no-repeat calc(100% - 12px) center !important;
-    padding-right: 36px !important;
-}
-
-.flatpickr-input:focus {
-    border-color: #6366f1 !important;
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1) !important;
-}
-
-/* Kontener kalendarza */
-.flatpickr-calendar {
-    font-family: 'Montserrat', sans-serif !important;
-    border-radius: 16px !important;
-    border: none !important;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15), 0 4px 16px rgba(99,102,241,0.1) !important;
-    padding: 8px !important;
-    width: 300px !important;
-}
-
-/* Nagłówek miesiąca */
-.flatpickr-months {
-    padding: 8px 4px 4px !important;
-    align-items: center;
-}
-
-.flatpickr-month {
-    height: 36px !important;
-}
-
-.flatpickr-current-month {
-    font-size: 15px !important;
-    font-weight: 700 !important;
-    color: #2c3e50 !important;
-    padding-top: 4px !important;
-}
-
-.flatpickr-current-month .flatpickr-monthDropdown-months {
-    font-weight: 700;
-    color: #2c3e50;
-}
-
-/* Strzałki nawigacji */
-.flatpickr-prev-month,
-.flatpickr-next-month {
-    color: #6366f1 !important;
-    fill: #6366f1 !important;
-    font-size: 20px !important;
-    padding: 6px 10px !important;
-    border-radius: 8px !important;
-    transition: background 0.15s;
-}
-
-.flatpickr-prev-month:hover,
-.flatpickr-next-month:hover {
-    background: #eef2ff !important;
-    color: #4338ca !important;
-}
-
-/* Nazwy dni tygodnia */
-.flatpickr-weekdays {
-    margin-top: 6px;
-}
-
-.flatpickr-weekday {
-    font-size: 11px !important;
-    font-weight: 700 !important;
-    color: #9ca3af !important;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-}
-
-/* Dni */
-.flatpickr-day {
-    font-family: 'Montserrat', sans-serif !important;
-    font-size: 13px !important;
-    font-weight: 600 !important;
-    color: #374151 !important;
-    border-radius: 10px !important;
-    height: 36px !important;
-    line-height: 36px !important;
-    border: none !important;
-    transition: all 0.15s ease !important;
+/* Kolory badge per typ */
+.task-once .badge-type {
+    background: color-mix(in oklab, var(--warning) 25%, transparent);
+    color: var(--warning);
 }
-
-.flatpickr-day:hover {
-    background: #eef2ff !important;
-    color: #4338ca !important;
-}
-
-/* Wybrany dzień */
-.flatpickr-day.selected,
-.flatpickr-day.selected:hover {
-    background: linear-gradient(135deg, #6366f1, #4f46e5) !important;
-    color: white !important;
-    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4) !important;
-    transform: scale(1.08);
-}
-
-/* Dzisiaj */
-.flatpickr-day.today {
-    border: 2px solid #6366f1 !important;
-    color: #4f46e5 !important;
-    background: #f0f0ff !important;
+.task-daily .badge-type {
+    background: color-mix(in oklab, var(--primary) 25%, transparent);
+    color: var(--primary);
 }
-
-.flatpickr-day.today:hover {
-    background: #eef2ff !important;
-}
-
-/* Dni spoza miesiąca */
-.flatpickr-day.prevMonthDay,
-.flatpickr-day.nextMonthDay {
-    color: #d1d5db !important;
-}
-
-/* Wyłączone dni (minDate) */
-.flatpickr-day.flatpickr-disabled {
-    color: #e5e7eb !important;
-    cursor: not-allowed !important;
+.task-weekly .badge-type {
+    background: color-mix(in oklab, var(--success) 25%, transparent);
+    color: var(--success);
 }

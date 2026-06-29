@@ -3,41 +3,252 @@
 {% load static %}
 <head>
     <meta charset="UTF-8">
-    <title>Habitly</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Habitly — RPG dla Twoich nawyków</title>
     <link rel="stylesheet" href="{% static 'css/home.css' %}">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://kit.fontawesome.com/e00b0940e0.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
-  <div class="app">
 
-    <header class="app-header">
-        <div class='logo-bar'>
-            <img src="{% static 'img/logo.png' %}" alt="logo" class="logo-img">
-            <h1 class="logo-name">Habitly</h1>
+    <!-- ═══════════════════════════════════════
+         NAVBAR
+    ═══════════════════════════════════════ -->
+    <header class="navbar">
+        <div class="navbar__logo">
+            <div class="navbar__logo-icon">✦</div>
+            <span class="navbar__logo-name">Habitly</span>
         </div>
-        <a href="{% url 'auth' %}" class="btn login">Logowanie</a>
+        <nav class="navbar__links">
+            <a href="#how" class="navbar__link">Jak to działa</a>
+            <a href="#ranks" class="navbar__link">Rangi</a>
+            <a href="#features" class="navbar__link">Funkcje</a>
+        </nav>
+        <a href="{% url 'auth' %}" class="btn-outline">Zaloguj się</a>
     </header>
 
-    <main class="app-content">
-        <div class="txt-content">
-            <h1>Track your
-            <br>
-            <span class="text-primary">habits.</span>
-            <br>
-            Change your life.</h1>
+    <!-- ═══════════════════════════════════════
+         HERO
+    ═══════════════════════════════════════ -->
+    <section class="hero">
+        <div class="hero__left">
+            <span class="hero__eyebrow">✦ RPG dla Twoich nawyków</span>
+            <h1 class="hero__title">
+                Każdy dzień to<br>
+                <span class="text-gradient">quest.</span>
+            </h1>
+            <p class="hero__desc">
+                Twórz codzienne, tygodniowe i jednorazowe zadania. Nabijaj streak,
+                zdobywaj XP i awansuj przez rangi — od Nowicjusza do Legendy.
+            </p>
+            <div class="hero__cta">
+                <a href="{% url 'auth' %}" class="btn-primary">Rozpocznij przygodę →</a>
+                <a href="#how" class="btn-ghost">Zobacz więcej</a>
+            </div>
         </div>
-        <div class="task-bar">
-            <h1 class="task-bar-head">Dzisiejsze zadania</h1>
-            <ul class="add-task-item">➕ Dodaj zadanie</ul>
-            <ul class="task-item">Bieganie Weekly Ukończono: 2 z 4 0 🔥<p>✓ Zakończ ❌</p></ul>
-            <ul class="task-item">Czytanie Daily  4 🔥<p>Ukończono ✅ ❌</p></ul>
-            <ul class="task-item">Zakupy Once <p>✓ Zakończ ❌</p></ul>
+
+        <div class="hero__right">
+            <div class="hero__card">
+                <div class="hero__card-header">
+                    <span class="hero__card-title">Dzisiaj</span>
+                    <span class="hero__card-xp">+120 XP</span>
+                </div>
+                <ul class="hero__tasks">
+                    <li class="hero__task hero__task--done">
+                        <span class="hero__task-check">✓</span>
+                        <span class="hero__task-name">Poranne bieganie</span>
+                        <span class="hero__task-pts">40 XP</span>
+                    </li>
+                    <li class="hero__task hero__task--done">
+                        <span class="hero__task-check">✓</span>
+                        <span class="hero__task-name">Czytanie 30 min</span>
+                        <span class="hero__task-pts">30 XP</span>
+                    </li>
+                    <li class="hero__task">
+                        <span class="hero__task-check hero__task-check--empty"></span>
+                        <span class="hero__task-name">Nauka języka</span>
+                        <span class="hero__task-pts">50 XP</span>
+                    </li>
+                    <li class="hero__task">
+                        <span class="hero__task-check hero__task-check--empty"></span>
+                        <span class="hero__task-name">Medytacja</span>
+                        <span class="hero__task-pts">20 XP</span>
+                    </li>
+                </ul>
+                <div class="hero__rank-bar">
+                    <div class="hero__rank-info">
+                        <span class="hero__rank-icon">🛡️</span>
+                        <span class="hero__rank-name">Wojownik · Lvl 4</span>
+                    </div>
+                    <div class="hero__rank-track">
+                        <div class="hero__rank-fill" style="width: 62%"></div>
+                    </div>
+                </div>
+            </div>
         </div>
-    </main>
-  </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════
+         JAK TO DZIAŁA
+    ═══════════════════════════════════════ -->
+    <section class="section" id="how">
+        <div class="section__inner">
+            <h2 class="section__title">Jak to działa?</h2>
+            <p class="section__subtitle">Trzy kroki, które zmienią Twoją produktywność w grę.</p>
+
+            <div class="steps">
+                <div class="step-card">
+                    <div class="step-card__icon">
+                        <i class="fa-solid fa-bullseye"></i>
+                    </div>
+                    <h3 class="step-card__title">Ustaw cele</h3>
+                    <p class="step-card__desc">Dodaj codzienne, tygodniowe lub jednorazowe zadania. Dopasuj je do swojego rytmu.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-card__icon">
+                        <i class="fa-solid fa-bolt"></i>
+                    </div>
+                    <h3 class="step-card__title">Wykonuj questy</h3>
+                    <p class="step-card__desc">Zaznaczaj wykonane zadania i zdobywaj punkty XP za każdy ukończony cel.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-card__icon">
+                        <i class="fa-solid fa-chart-line"></i>
+                    </div>
+                    <h3 class="step-card__title">Awansuj w rangach</h3>
+                    <p class="step-card__desc">Zbieraj streaki, zdobywaj osiągnięcia i wspinaj się po drabinie rang RPG.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════
+         RANGI
+    ═══════════════════════════════════════ -->
+    <section class="section section--dark" id="ranks">
+        <div class="section__inner">
+            <h2 class="section__title">5 rang do zdobycia</h2>
+            <p class="section__subtitle">Od Nowicjusza do Legendy — każdy poziom to nowy poziom motywacji.</p>
+
+            <div class="ranks-grid">
+                <div class="rank-card">
+                    <div class="rank-card__icon">🌱</div>
+                    <div class="rank-card__name">Nowicjusz</div>
+                    <div class="rank-card__xp">od 0 XP</div>
+                </div>
+                <div class="rank-card">
+                    <div class="rank-card__icon">⚡</div>
+                    <div class="rank-card__name">Adept</div>
+                    <div class="rank-card__xp">od 200 XP</div>
+                </div>
+                <div class="rank-card">
+                    <div class="rank-card__icon">🔥</div>
+                    <div class="rank-card__name">Wojownik</div>
+                    <div class="rank-card__xp">od 500 XP</div>
+                </div>
+                <div class="rank-card">
+                    <div class="rank-card__icon">💎</div>
+                    <div class="rank-card__name">Mistrz</div>
+                    <div class="rank-card__xp">od 1000 XP</div>
+                </div>
+                <div class="rank-card rank-card--highlight">
+                    <div class="rank-card__icon">👑</div>
+                    <div class="rank-card__name">Legenda</div>
+                    <div class="rank-card__xp">od 2000 XP</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════
+         FEATURES
+    ═══════════════════════════════════════ -->
+    <section class="section" id="features">
+        <div class="section__inner">
+            <h2 class="section__title">Wszystko, czego potrzebujesz</h2>
+            <p class="section__subtitle">Habitly łączy świetny design z mechanikami gry, żebyś nie rezygnował z nawyków.</p>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-card__icon"><i class="fa-solid fa-fire"></i></div>
+                    <h3 class="feature-card__title">Streaki bez końca</h3>
+                    <p class="feature-card__desc">Codzienne i tygodniowe zadania budują pasmo sukcesów. Nie przerywaj łańcucha.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-card__icon"><i class="fa-solid fa-star"></i></div>
+                    <h3 class="feature-card__title">XP i rangi</h3>
+                    <p class="feature-card__desc">Każde wykonane zadanie daje punkty. Awansuj przez 5 rang RPG.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-card__icon"><i class="fa-regular fa-calendar"></i></div>
+                    <h3 class="feature-card__title">Kalendarz misji</h3>
+                    <p class="feature-card__desc">Wszystkie zadania w jednym widoku. Planuj jak strateg.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-card__icon"><i class="fa-solid fa-rotate"></i></div>
+                    <h3 class="feature-card__title">Różne częstotliwości</h3>
+                    <p class="feature-card__desc">Codzienne, tygodniowe lub jednorazowe — dopasuj nawyki do siebie.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-card__icon"><i class="fa-solid fa-trophy"></i></div>
+                    <h3 class="feature-card__title">Osiągnięcia</h3>
+                    <p class="feature-card__desc">Zdobywaj odznaki za ukończenia, streaki i aktywność. Motywacja gwarantowana.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-card__icon"><i class="fa-solid fa-chart-simple"></i></div>
+                    <h3 class="feature-card__title">Postęp w czasie</h3>
+                    <p class="feature-card__desc">Śledź swoje wyniki, XP i dni z aktywnością w panelu profilu.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════
+         CTA
+    ═══════════════════════════════════════ -->
+    <section class="cta-section">
+        <div class="cta-section__inner">
+            <h2 class="cta-section__title">Gotowy na swoją przygodę?</h2>
+            <p class="cta-section__desc">
+                Stwórz swoje pierwsze nawyki i zacznij zdobywać XP już dziś.<br>
+                Rejestracja zajmuje mniej niż minutę.
+            </p>
+            <a href="{% url 'auth' %}" class="btn-primary">Załóż konto →</a>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════
+         FOOTER
+    ═══════════════════════════════════════ -->
+    <footer class="footer">
+        <div class="footer__logo">
+            <div class="footer__logo-icon">✦</div>
+            <span class="footer__logo-name">Habitly</span>
+        </div>
+        <p class="footer__copy">© 2025 Habitly. Wszelkie prawa zastrzeżone.</p>
+    </footer>
+
+    <script>
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.12 });
+
+        document.querySelectorAll('.step-card, .rank-card, .feature-card').forEach(el => {
+            observer.observe(el);
+        });
+
+        document.querySelectorAll('a[href^="#"]').forEach(link => {
+            link.addEventListener('click', e => {
+                e.preventDefault();
+                const target = document.querySelector(link.getAttribute('href'));
+                if (target) target.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+    </script>
+
 </body>
 </html>

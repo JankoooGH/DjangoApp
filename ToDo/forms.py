@@ -17,13 +17,16 @@ class RegisterForm(UserCreationForm):
 class TaskForm(forms.ModelForm):
     date = forms.DateField(
         required=False,
-        input_formats=['%d.%m.%Y'],
-        widget=forms.DateInput(attrs={'placeholder': 'dd.mm.yyyy'})
+        input_formats=['%Y-%m-%d'],  # format HTML date input
+        widget=forms.DateInput(
+            attrs={'type': 'date'},
+            format='%Y-%m-%d'
+        )
     )
 
     class Meta:
         model = Task
-        fields = ['title', 'task_type', 'date', "weekly_target"]
+        fields = ['title', 'description', 'task_type', 'date', 'weekly_target', 'color']
 
     def clean(self):
         cleaned_data = super().clean()

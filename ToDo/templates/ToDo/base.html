@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pl">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Habitly{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    {% block extra_css %}{% endblock %}
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/e00b0940e0.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ══════════════════════════════════════════════════
+       SIDEBAR
+  ══════════════════════════════════════════════════ -->
+
+    <aside class="sidebar">
+
+        <div class="sidebar__logo">
+            <div class="sidebar__logo-icon">✦</div>
+            <span class="sidebar__logo-name">Habitly</span>
+        </div>
+
+        <!-- User card -->
+
+        <div class="user-card">
+          <div class="user-card__top">
+            <div class="user-card__avatar">{{ rank_icon }}</div>
+            <div>
+              <div class="user-card__name">{{ request.user.username }}</div>
+              <div class="user-card__level">{{ rank_name }}</div>
+            </div>
+          </div>
+          <div class="xp-bar-labels">
+            <span>{{ profile.xp }} XP</span>
+            <span>{{ profile.xp|add:xp_to_next }} XP</span>
+          </div>
+          <div class="xp-bar-track">
+            <div class="xp-bar-fill" style="width: {{ progress }}%"></div>
+          </div>
+        </div>
+
+        <!--Nawigacja-->
+
+        <nav class="sidebar-nav ">
+            <a href="{% url 'home' %}"
+               class="sidebar-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}">
+                <i class="fa-solid fa-house"></i>Pulpit
+            </a>
+
+            <a href="{% url 'habbits' %}"
+               class="sidebar-link {% if request.resolver_match.url_name == 'habbits' %}active{% endif %}">
+                <i class="fa-solid fa-list"></i>Nawyki
+            </a>
+
+            <a href="{% url 'calendar' %}"
+               class="sidebar-link {% if request.resolver_match.url_name == 'calendar' %}active{% endif %}">
+                <i class="fa-regular fa-calendar"></i>Kalendarz
+            </a>
+
+            <a href="{% url 'profile' %}"
+               class="sidebar-link {% if request.resolver_match.url_name == 'profile' %}active{% endif %}">
+                <i class="fa-regular fa-user"></i>Profil
+            </a>
+        </nav>
+
+        <!--stopka-->
+
+        <div class="sidebar-footer">
+            <button id="theme-toggle" class="sidebar-logout" onclick="toggleTheme()">
+                <i class="fa-solid fa-lightbulb"></i>Tryb jasny
+            </button>
+            <form method="POST" action="{% url 'logout' %}">
+    {% csrf_token %}
+            <button type="submit" class="sidebar-logout">
+                <i class="fa-solid fa-arrow-right-from-bracket" style="color: rgb(181, 181, 181);"></i>Wyloguj
+            </button>
+        </form>
+        </div>
+    </aside>
+
+    {% block content %}
+    {% endblock %}
+
+</div>
+
+<script src="{% static 'js/base.js' %}"></script>
+
+{% block extra_js %}{% endblock %}
+
+</body>
+</html>

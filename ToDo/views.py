@@ -1,11 +1,13 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Task, UserProfile, TaskNote
+from .models import Task, UserProfile, TaskNote, TaskLog
 from django.utils import timezone
 from django.db.models import Q
 from django.http import JsonResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from .forms import TaskForm, RegisterForm
+from django.db.models import Count
+from django.utils.dateparse import parse_date
 
 
 def auth_view(request):
@@ -88,23 +90,20 @@ def home(request):
         'tasks_total': tasks_total,
         'tasks_done': tasks_done,
         'day_progress': day_progress,
+        'today': timezone.localdate(),
     }
     return render(request, 'ToDo/main.html', context)
-
 
 def landing(request):
     if request.user.is_authenticated:
         return redirect('home')
     return render(request, 'ToDo/home.html')
 
-
 def delete_task(request, task_id):
-    task = get_object_or_404(Task, pk=task_id)
+    task = get_object_or_404(Task, pk=task_id, user=request.user)
     if request.method == "POST":
         task.delete()
-        return redirect('home')
-    return render(request, "ToDo/confirm_delete.html", {"task": task})
-
+        return redirect('habbits')
 
 def toggle_task(request, task_id):
     task = get_object_or_404(Task, pk=task_id)
@@ -114,20 +113,31 @@ def toggle_task(request, task_id):
         if not task.completed:
             task.once_task()
             profile.xp += 10
-            profile.save()
+            TaskLog.objects.get_or_create(task=task, date=task.date, defaults={"completed": True})
+        else:
+            task.completed = False
+            task.save()
+            profile.xp = max(0, profile.xp - 10)
+            TaskLog.objects.filter(task=task, date=task.date).delete()
+        profile.save()
 
     elif task.task_type == Task.TASK_DAILY:
         today = timezone.localdate()
         if task.last_completed != today:
             task.daily_task()
             profile.xp += 15
+            TaskLog.objects.get_or_create(task=task, date=today, defaults={"completed": True})
             if task.streak > 0 and task.streak % 7 == 0:
                 profile.xp += 20
             if task.streak > 0 and task.streak % 30 == 0:
                 profile.xp += 50
-            profile.save()
         else:
-            task.daily_task()
+            task.last_completed = None
+            task.streak = max(0, task.streak - 1)
+            task.save()
+            profile.xp = max(0, profile.xp - 15)
+            TaskLog.objects.filter(task=task, date=today).delete()
+        profile.save()
 
     elif task.task_type == Task.TASK_WEEKLY:
         was_done = task.is_done_today()
@@ -138,20 +148,66 @@ def toggle_task(request, task_id):
             profile.xp = max(0, profile.xp - 25)
         profile.save()
 
-    return redirect('home')
+    all_tasks = list(Task.objects.filter(
+        user=request.user
+    ).filter(
+        Q(task_type=Task.TASK_DAILY) |
+        Q(task_type=Task.TASK_WEEKLY) |
+        Q(task_type=Task.TASK_ONCE, date=timezone.localdate())
+    ))
+    tasks_total = len(all_tasks)
+    tasks_done = sum(1 for t in all_tasks if t.is_done_today())
+    day_progress = int((tasks_done / tasks_total) * 100) if tasks_total > 0 else 0
+
+    if task.task_type == Task.TASK_DAILY:
+        streak = task.streak
+    elif task.task_type == Task.TASK_WEEKLY:
+        streak = task.weekly_progress_count()
+    else:
+        streak = None
+
+    return JsonResponse({
+        'status': 'ok',
+        'is_done': task.is_done_today(),
+        'day_progress': day_progress,
+        'tasks_done': tasks_done,
+        'tasks_total': tasks_total,
+        'xp': profile.xp,
+        'weekly_progress': task.weekly_progress_count() if task.task_type == Task.TASK_WEEKLY else None,
+        'weekly_streak': task.weekly_streak() if task.task_type == Task.TASK_WEEKLY else None,
+        'streak': task.streak if task.task_type == Task.TASK_DAILY else None,
+        'weekly_target': task.weekly_target,
+    })
+
+def habbits(request):
+    return render(request, 'ToDo/habbits.html')
+
+def main(request):
+    return render(request, 'ToDo/main.html')
 
 
 # ============================================================
 # Kalendarz
 # ============================================================
 
+@login_required(login_url='auth')
 def calendar_view(request):
-    return render(request, "kalendarz/calendar.html")
+    profile, _ = UserProfile.objects.get_or_create(user=request.user)
+
+    context = {
+        'profile': profile,
+        'rank_icon': profile.rank()[0],
+        'rank_name': profile.rank()[1],
+        'progress': profile.rank_progress_percent(),
+        'xp_to_next': profile.xp_to_next_rank(),
+    }
+
+    return render(request, "ToDo/calendar.html", context)
 
 
 def calendar_events(request):
     events = []
-    tasks = Task.objects.filter(task_type=Task.TASK_ONCE, user=request.user)
+    tasks = Task.objects.filter(user=request.user)
     for task in tasks:
         if task.date:
             events.append({
@@ -159,6 +215,49 @@ def calendar_events(request):
                 "start": task.date.isoformat(),
             })
     return JsonResponse(events, safe=False)
+
+@login_required
+def calendar_month(request):
+    year = request.GET.get('year')
+    month = request.GET.get('month')
+    logs = TaskLog.objects.filter(
+        task__user=request.user,
+        date__year=year,
+        date__month=month,
+        completed=True
+    ).values('date').annotate(count=Count('id'))
+
+    data = {}
+    for log in logs:
+        data[log['date'].isoformat()] = log['count']
+
+    return JsonResponse(data)
+
+@login_required
+def calendar_day(request):
+    date = request.GET.get('date')
+    parsed_date = parse_date(date)
+
+    tasks = Task.objects.filter(
+        user=request.user
+    ).filter(
+        Q(task_type=Task.TASK_DAILY) |
+        Q(task_type=Task.TASK_WEEKLY) |
+        Q(task_type=Task.TASK_ONCE, date=parsed_date)
+    )
+
+    data = []
+    for task in tasks:
+        is_completed = task.logs.filter(date=parsed_date, completed=True).exists()
+        data.append({
+            'title': task.title,
+            'type': task.task_type,
+            'color': task.color,
+            'completed': is_completed,
+            'xp': 25 if task.task_type == 'WEEKLY' else 15 if task.task_type == 'DAILY' else 10,
+        })
+
+    return JsonResponse(data, safe=False)
 
 
 # ============================================================
@@ -170,7 +269,7 @@ def note_list(request, task_id):
     """GET — zwraca listę notatek dla danego zadania."""
     task = get_object_or_404(Task, pk=task_id, user=request.user)
     notes = list(task.notes.values('id', 'title', 'content', 'created_at'))
-    # serializuj daty
+    # serializer daty
     for n in notes:
         n['created_at'] = n['created_at'].strftime('%d.%m.%Y %H:%M')
     return JsonResponse({'notes': notes})
@@ -226,3 +325,35 @@ def profile_view(request):
         'longest_streak': longest_streak.streak if longest_streak else 0,
     }
     return render(request, 'ToDo/profile.html', context)
+
+
+@login_required(login_url='auth')
+def habbits(request):
+    today = timezone.localdate()
+    profile, _ = UserProfile.objects.get_or_create(user=request.user)
+    form = TaskForm()
+
+    tasks = Task.objects.filter(user=request.user).filter(
+        Q(task_type=Task.TASK_DAILY) |
+        Q(task_type=Task.TASK_WEEKLY) |
+        Q(task_type=Task.TASK_ONCE, date=today)
+    )
+
+    if request.method == 'POST':
+        form = TaskForm(request.POST)
+        if form.is_valid():
+            task = form.save(commit=False)
+            task.user = request.user
+            task.save()
+        return redirect('habbits')
+
+    context = {
+        'tasks': tasks,
+        'form': form,
+        'profile': profile,
+        'rank_icon': profile.rank()[0],
+        'rank_name': profile.rank()[1],
+        'progress': profile.rank_progress_percent(),
+        'xp_to_next': profile.xp_to_next_rank(),
+    }
+    return render(request, 'ToDo/habbits.html', context)

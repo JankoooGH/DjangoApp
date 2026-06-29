@@ -1,0 +1,184 @@
+{% extends 'ToDo/base.html' %}
+{% load static %}
+
+{% block title %}Dashboard — Habitly{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/habbits.css' %}">
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/habbits.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+
+  <!-- ══════════════════════════════════════════════════
+       MAIN CONTENT
+  ══════════════════════════════════════════════════ -->
+<main class="main">
+
+    <div class="main__header">
+      <div>
+        <h1 class="main__title">Twoje nawyki</h1>
+        <p class="main__subtitle">Zarządzaj swoimi questami.</p>
+      </div>
+      <button class="btn-new" onclick="openModal()">
+        + Nowy nawyk
+      </button>
+    </div>
+
+    <!-- Habits list -->
+    <div class="habits-list">
+      {% for task in tasks %}
+      <div class="habit-card" style="animation-delay: {{ forloop.counter0 }} 00ms ">
+
+        <!-- Colored accent bar -->
+        <div class="habit-card__accent accent-{{ task.color|default:'indigo' }}"></div>
+
+        <div class="habit-card__body">
+          <div class="habit-card__top">
+            <span class="habit-card__title">{{ task.title }}</span>
+            {% if task.task_type == 'WEEKLY' %}
+              <span class="badge badge--weekly">Tygodniowe</span>
+            {% elif task.task_type == 'DAILY' %}
+              <span class="badge badge--daily">Codzienne</span>
+            {% else %}
+              <span class="badge badge--once">Jednorazowe</span>
+            {% endif %}
+          </div>
+
+          {% if task.description %}
+            <p class="habit-card__desc">{{ task.description }}</p>
+          {% endif %}
+
+          <div class="habit-card__meta">
+            <span class="habit-card__xp">+.. XP</span>
+            <span class="habit-card__streak">
+              🔥 streak:
+              {% if task.task_type == 'DAILY' %}
+                {{ task.streak }}
+              {% elif task.task_type == 'WEEKLY' %}
+                {{ task.weekly_streak }}
+              {% else %}
+                —
+              {% endif %}
+            </span>
+            {% if task.task_type == 'WEEKLY' %}
+              <span>{{ task.weekly_progress_count }} wykonań</span>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- Delete -->
+        <button type="button"  onclick="openDeleteModal( {{ task.id }}, '{{ task.title }}')" class="btn-delete" title="Usuń">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3 6 5 6 21 6"/>
+            <path d="M19 6l-1 14H6L5 6"/>
+            <path d="M10 11v6M14 11v6"/>
+            <path d="M9 6V4h6v2"/>
+          </svg>
+        </button>
+
+      </div>
+      {% empty %}
+      <div class="empty-state">
+        <div class="empty-state__icon">⚔️</div>
+        <p class="empty-state__text">Nie masz jeszcze żadnych nawyków.<br>Dodaj swój pierwszy quest!</p>
+      </div>
+      {% endfor %}
+    </div>
+
+  </main>
+
+  <!-- ══════════════════════════════════════════════════
+       MODAL — Nowy nawyk
+  ══════════════════════════════════════════════════ -->
+  <div class="modal-overlay" id="modal-overlay" onclick="handleOverlayClick(event)" style="display:none">
+    <div class="modal">
+
+      <div class="modal__header">
+        <h2 class="modal__title">Stwórz nawyk</h2>
+        <button class="modal__close" onclick="closeModal()">×</button>
+      </div>
+
+      <form method="POST" action="{% url 'home' %}">
+        {% csrf_token %}
+
+        <div class="modal-field">
+          <label for="id_title">Nazwa</label>
+          {{ form.title }}
+        </div>
+
+        <div class="modal-field">
+          <label for="id_description">Opis (opcjonalny)</label>
+          {{ form.description }}
+        </div>
+
+        <div class="modal-field">
+          <label for="id_task_type">Częstotliwość</label>
+          {{ form.task_type }}
+        </div>
+
+        <!-- Widoczne tylko dla WEEKLY -->
+        <div class="modal-field" id="field-weekly-target" style="display:none">
+          <label for="id_weekly_target">Ile razy w tygodniu?</label>
+          {{ form.weekly_target }}
+        </div>
+
+        <!-- Widoczne tylko dla ONCE -->
+        <div class="modal-field" id="field-date" style="display:none">
+          <label for="id_date" >Data wykonania <span style="color:var(--muted-foreground);font-weight:400">(opcjonalnie — domyślnie dzisiaj)</span></label>
+            {% load widget_tweaks %}
+            {{ form.date|attr:"onclick:this.showPicker()" }}
+        </div>
+
+        <!-- Color picker -->
+        <p class="color-label">Kolor</p>
+        <div class="color-picker">
+          <div class="color-swatch selected" data-color="indigo" onclick="selectColor(this)"></div>
+          <div class="color-swatch" data-color="purple" onclick="selectColor(this)"></div>
+          <div class="color-swatch" data-color="pink"   onclick="selectColor(this)"></div>
+          <div class="color-swatch" data-color="teal"   onclick="selectColor(this)"></div>
+          <div class="color-swatch" data-color="orange" onclick="selectColor(this)"></div>
+          <div class="color-swatch" data-color="cyan"   onclick="selectColor(this)"></div>
+          <div class="color-swatch" data-color="red"    onclick="selectColor(this)"></div>
+          <div class="color-swatch" data-color="green"  onclick="selectColor(this)"></div>
+        </div>
+        <input type="hidden" name="color" id="color-input" value="indigo">
+
+        <button type="submit" class="btn-submit-modal">Stwórz nawyk</button>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════
+       MODAL — Delete
+  ══════════════════════════════════════════════════ -->
+
+<div class="modal-overlay" id="delete-overlay" style="display:none">
+    <div class="modal" style="
+        width: auto;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        gap: 10px;">
+        <h2>Usunąć?</h2>
+        <p id="delete-modal-text"></p>
+
+        <form method="POST" id="delete-form" style="
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;">
+
+            {% csrf_token %}
+            <button class="btn-submit-modal" type="button" onclick="closeDeleteModal()">Anuluj</button>
+            <button class="btn-submit-modal" type="submit"
+                    style="background: var(--destructive)">Usuń</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

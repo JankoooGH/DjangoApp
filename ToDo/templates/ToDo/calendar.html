@@ -1,0 +1,29 @@
+{% extends 'ToDo/base.html' %}
+{% load static %}
+
+{% block title %}Dashboard — Habitly{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/calendar.css' %}">
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/calendar.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+
+    <main class="main">
+        <section class="header">
+            <h1>Kalendarz misji</h1>
+            <p>Twoja historia ukończonych questów.</p>
+        </section>
+
+        <section class="calendar glass">
+        </section>
+
+        <section class="task-list glass">
+
+        </section>
+    </main>
+{% endblock %}

@@ -1,75 +1,93 @@
-<!DOCTYPE html>
-<html lang="pl">
+{% extends 'ToDo/base.html' %}
 {% load static %}
-{% load widget_tweaks %}
-<head>
-    <meta charset="UTF-8">
-    <title>Habitly Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
-    <script src="https://kit.fontawesome.com/e00b0940e0.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-</head>
-<body>
-<div class="app">
 
-    <!-- ========== HEADER ========== -->
-    <header class="app-header">
-        <div class="logo-bar">
-            <img src="{% static 'img/logo.png' %}" alt="logo" class="logo-img">
-            <span class="logo-name">Habitly</span>
-        </div>
-        <div class="rank-bar">
-            <span class="rank-label">{{ rank_icon }} {{ rank_name }}</span>
-            <div class="rank-progress-bg">
-                <div class="rank-progress-fill" style="width: {{ progress }}%"></div>
+{% block title %}Dashboard — Habitly{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/main.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<!-- Right side -->
+
+    <main class="app-content" data-csrf="{{ csrf_token }}">
+        <div class="page-header">
+            <div>
+                <p class="header-date">{{ today|date:"l, j E" }}</p>
+                <h1 class="header-title">Witaj, <span class="text-gradient">{{ request.user.username }}</span></h1>
             </div>
-            <span class="rank-xp">{{ profile.xp }} XP</span>
         </div>
-        <nav class="header-nav">
-            <a href="{% url 'calendar' %}" class="nav-icon" title="Kalendarz">
-                <i class="fa-regular fa-calendar"></i>
-            </a>
-            <a href="{% url 'profile' %}" class="btn">Profil</a>
-            <form method="POST" action="{% url 'logout' %}">
-                {% csrf_token %}
-                <button type="submit" class="btn">Wyloguj</button>
-            </form>
-        </nav>
-    </header>
 
-    <!-- ========== MAIN ========== -->
-    <main class="app-content">
-        <div class="task-bar">
-
-            <h1 class="task-bar-head">Dzisiejsze zadania</h1>
-
-            <!-- Dzienny pasek postępu -->
-            <div class="day-progress-wrap">
-                <div class="day-progress-header">
-                    <span class="day-progress-label">
-                        {% if day_progress == 100 %}🎉 Wszystko zrobione!
-                        {% elif day_progress >= 50 %}💪 Dobra robota!
-                        {% elif tasks_total == 0 %}📋 Dodaj pierwsze zadanie
-                        {% else %}🚀 Do dzieła!{% endif %}
-                    </span>
-                    <span class="day-progress-count">{{ tasks_done }}/{{ tasks_total }}</span>
+        <div class="stats-grid">
+            <div class="glass stat-card top-bloks progress-block">
+                <div>
+                    <i class="fa-solid fa-chart-simple"></i>
                 </div>
-                <div class="day-progress-bg">
-                    <div class="day-progress-fill {% if day_progress == 100 %}day-progress-complete{% endif %}"
+                <p>{{ tasks_total }}</p>
+                <p>Postęp zadań</p>
+            </div>
+
+            <div class="glass stat-card top-bloks xp-block">
+                <div>
+                    <i class="fa-solid fa-bolt"></i>
+                </div>
+                <p>{{ profile.xp }}</p>
+                <p>XP</p>
+            </div>
+
+            <div class="glass stat-card top-bloks rank-block">
+                <div>
+                    <i class="fa-solid fa-star"></i>
+                </div>
+                <p>{{ rank_name }}</p>
+                <p>Ranga</p>
+            </div>
+
+            <div class="glass stat-card top-bloks best-streak-block">
+                <div>
+                    <i class="fa-solid fa-fire"></i>
+                </div>
+                <p>{{ longest_streak }} 1</p>
+                <p>Najlepszy streak</p>
+            </div>
+        </div>
+
+        <section class="progress-bar">
+
+            <div class="progress-bar-wrap glass stat-card">
+                <div class="progress-bar-header">
+                    <div class="progress-bar-label">
+                        <h2>Postęp dzisiejszego dnia</h2>
+                        <span id="day-message">
+                            {% if day_progress == 100 %}🎉 Wszystko zrobione!
+                            {% elif day_progress >= 50 %}💪 Dobra robota!
+                            {% elif tasks_total == 0 %}📋 Dodaj pierwsze zadanie
+                            {% else %}🚀 Do dzieła!{% endif %}
+                        </span>
+                    </div>
+                    <span class="progress-bar-count">{{ tasks_done }}/{{ tasks_total }}</span>
+                </div>
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill {% if day_progress == 100 %}progress-bar-complete{% endif %}"
                          data-width="{{ day_progress }}" style="width: 0%"></div>
                 </div>
-                <span class="day-progress-pct" id="day-pct-text">0%</span>
+                <span class="progress-bar-pct" id="day-pct-text" data-progress="{{ day_progress }}">0%</span>
             </div>
 
-            <button onclick="openModal()" class="add-task-btn">
-                ➕ Dodaj zadanie
-            </button>
+        </section>
 
-            <ul class="list-group">
+
+
+        <section class="tasks-list">
+            <h1>Zadania na dziś</h1>
+             <ul class="list-group">
                 {% for task in tasks %}
-                <li class="my-task">
+                <li class="my-task glass task-{{ task.task_type|lower }} {% if task.is_done_today %}my-task--done{% endif %}">
                     <div class="task-left">
+                        <button class="task-checkbox {% if task.is_done_today %}checked{% endif %}"
+                                onclick="toggleTask({{ task.id }}, this)">
+                            {% if task.is_done_today %}✓{% endif %}
+                        </button>
                         {% if task.is_done_today %}
                             <s class="task-title done">{{ task.title }}</s>
                         {% else %}
@@ -77,378 +95,31 @@
                         {% endif %}
 
                         <span class="badge badge-type">{{ task.get_task_type_display }}</span>
+                        {% if task.task_type == 'WEEKLY' %}
+                            <span class="badge badge-type badge-weekly-progress">Ukończono: {{ task.weekly_progress_count }} z {{ task.weekly_target }}</span>
+                        {% endif %}
 
-                        {% if task.task_type == 'DAILY' %}
-                            <span class="badge badge-streak">🔥 {{ task.streak }}</span>
+
+                    </div>
+                    <div class="task-right">
+                        {% if task.task_type == 'ONCE' %}
+                            <span class="task-xp">+10 XP</span>
+                        {% elif task.task_type == 'DAILY' %}
+                            <span class="task-xp">+15 XP</span>
+                            <span class="task-streak">🔥 {{ task.streak }}</span>
                         {% elif task.task_type == 'WEEKLY' %}
-                            <span class="badge badge-weekly">Ukończono: {{ task.weekly_progress_count }} z {{ task.weekly_target }}</span>
-                            <span class="badge badge-streak">🔥 {{ task.weekly_streak }}</span>
+                            <span class="task-xp">+25 XP</span>
+                            <span class="task-streak">🔥 {{ task.weekly_streak }}</span>
                         {% endif %}
                     </div>
-
-                    <div class="task-actions">
-                        <!-- Notatki -->
-                        <button class="btn-task btn-note" onclick="openNoteModal({{ task.id }}, '{{ task.title|escapejs }}')">
-                            📝
-                        </button>
-
-                        <!-- Toggle -->
-                        <form method="POST" action="{% url 'toggle_task' task.id %}">
-                            {% csrf_token %}
-                            <button type="submit"
-                                class="btn-task {% if task.is_done_today %}btn-done{% else %}btn-todo{% endif %}"
-                                {% if task.is_done_today and task.task_type != 'WEEKLY' %}disabled{% endif %}>
-                                {% if task.is_done_today %}
-                                    {% if task.task_type == 'WEEKLY' %}Odkliknij ↩{% else %}Ukończono ✅{% endif %}
-                                {% else %}
-                                    ✓ Zakończ
-                                {% endif %}
-                            </button>
-                        </form>
-
-                        <!-- Usuń -->
-                        <form method="POST" action="{% url 'delete_task' task.id %}">
-                            {% csrf_token %}
-                            <button type="submit" class="btn-task btn-delete">❌</button>
-                        </form>
-                    </div>
-                </li>
-                {% empty %}
+                    {% empty %}
                 <li class="task-empty">Brak zadań na dziś 🙃</li>
                 {% endfor %}
             </ul>
+        </section>
 
-        </div>
+
+
+
     </main>
-
-</div>
-
-
-<!-- ========== MODAL NOTATEK ========== -->
-<div id="noteModal" class="modal-overlay" onclick="handleNoteOverlayClick(event)">
-    <div class="modal-box note-modal-box">
-
-        <button onclick="closeNoteModal()" class="modal-close">✕</button>
-        <h2 class="modal-title" id="note-modal-title">📝 Notatki</h2>
-
-        <div class="note-modal-body">
-
-            <!-- LEWA STRONA: formularz -->
-            <div class="note-form-panel">
-                <div class="form-group">
-                    <label>Tytuł notatki</label>
-                    <input type="text" id="note-title-input" class="form-input"
-                           placeholder="np. Przemyślenia, Plan...">
-                </div>
-                <div class="form-group">
-                    <label>Treść</label>
-                    <textarea id="note-content-input" class="form-input note-textarea"
-                              placeholder="Zapisz swoje przemyślenia..."></textarea>
-                </div>
-                <button onclick="saveNote()" class="modal-submit note-save-btn">
-                    💾 Zapisz notatkę
-                </button>
-                <p id="note-save-msg" class="note-save-msg hidden">✅ Zapisano!</p>
-            </div>
-
-            <!-- PRAWA STRONA: lista notatek -->
-            <div class="note-list-panel">
-                <h3 class="note-list-heading">Zapisane notatki</h3>
-                <ul id="note-list" class="note-list">
-                    <li class="note-list-empty" id="note-list-empty">Brak notatek</li>
-                </ul>
-            </div>
-
-        </div>
-    </div>
-</div>
-
-<!-- ========== MODAL SZCZEGÓŁÓW NOTATKI ========== -->
-<div id="noteDetailModal" class="modal-overlay" onclick="handleDetailOverlayClick(event)">
-    <div class="modal-box note-detail-box">
-        <button onclick="closeNoteDetail()" class="modal-close">✕</button>
-        <h2 class="modal-title" id="note-detail-title"></h2>
-        <p class="note-detail-content" id="note-detail-content"></p>
-        <button onclick="deleteNote()" class="btn-task btn-delete note-delete-btn">🗑 Usuń notatkę</button>
-    </div>
-</div>
-
-
-<!-- ========== MODAL ZADAŃ ========== -->
-<div id="taskModal" class="modal-overlay">
-    <div class="modal-box">
-        <button onclick="closeModal()" class="modal-close">✕</button>
-        <h2 class="modal-title">Dodaj zadanie</h2>
-
-        <form method="POST" class="modal-form">
-            {% csrf_token %}
-
-            <div class="form-group">
-                <label>Nazwa zadania</label>
-                {{ form.title|add_class:"form-input" }}
-            </div>
-
-            <div class="form-group">
-                <label>Rodzaj zadania</label>
-                {{ form.task_type|add_class:"form-input" }}
-            </div>
-
-            <div class="form-group" id="date-field">
-                <label>Data</label>
-                {{ form.date|add_class:"form-input" }}
-            </div>
-
-            <div class="form-group hidden" id="weekly-field">
-                <label>Ile razy w tygodniu?</label>
-                {{ form.weekly_target|add_class:"form-input" }}
-            </div>
-
-            <button type="submit" class="modal-submit">Dodaj</button>
-        </form>
-    </div>
-</div>
-
-
-<script>
-const CSRF_TOKEN = "{{ csrf_token }}";
-let activeTaskId = null;
-let activeNoteId = null;
-
-// ========== MODAL NOTATEK ==========
-
-function openNoteModal(taskId, taskTitle) {
-    activeTaskId = taskId;
-    document.getElementById("note-modal-title").textContent = "📝 " + taskTitle;
-    document.getElementById("note-title-input").value = "";
-    document.getElementById("note-content-input").value = "";
-    document.getElementById("note-save-msg").classList.add("hidden");
-    loadNotes();
-    document.getElementById("noteModal").classList.add("active");
-}
-
-function closeNoteModal() {
-    document.getElementById("noteModal").classList.remove("active");
-    activeTaskId = null;
-}
-
-function handleNoteOverlayClick(e) {
-    if (e.target.id === "noteModal") closeNoteModal();
-}
-
-function loadNotes() {
-    fetch(`/note/${activeTaskId}/list/`)
-        .then(r => r.json())
-        .then(data => renderNoteList(data.notes));
-}
-
-function renderNoteList(notes) {
-    const list = document.getElementById("note-list");
-    const empty = document.getElementById("note-list-empty");
-
-    // usuń stare wpisy (ale zostaw placeholder)
-    list.querySelectorAll(".note-list-item").forEach(el => el.remove());
-
-    if (notes.length === 0) {
-        empty.style.display = "block";
-        return;
-    }
-    empty.style.display = "none";
-
-    notes.forEach(note => {
-        const li = document.createElement("li");
-        li.className = "note-list-item";
-
-        const btn = document.createElement("button");
-        btn.className = "note-list-btn";
-        btn.innerHTML = `
-            <span class="note-list-icon">📄</span>
-            <span class="note-list-title-text">${escapeHtml(note.title)}</span>
-            <span class="note-list-arrow">›</span>
-        `;
-        btn.addEventListener("click", () => openNoteDetail(note.id, note.title, note.content));
-
-        li.appendChild(btn);
-        list.appendChild(li);
-    });
-}
-
-function saveNote() {
-    const title = document.getElementById("note-title-input").value.trim();
-    const content = document.getElementById("note-content-input").value.trim();
-
-    if (!title) {
-        document.getElementById("note-title-input").focus();
-        return;
-    }
-
-    fetch(`/note/${activeTaskId}/save/`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-            "X-CSRFToken": CSRF_TOKEN,
-        },
-        body: `title=${encodeURIComponent(title)}&content=${encodeURIComponent(content)}`
-    })
-    .then(r => r.json())
-    .then(data => {
-        if (data.status === "ok") {
-            document.getElementById("note-title-input").value = "";
-            document.getElementById("note-content-input").value = "";
-            const msg = document.getElementById("note-save-msg");
-            msg.classList.remove("hidden");
-            setTimeout(() => msg.classList.add("hidden"), 2000);
-            loadNotes();
-        }
-    });
-}
-
-// ========== MODAL SZCZEGÓŁÓW ==========
-
-function openNoteDetail(noteId, title, content) {
-    activeNoteId = noteId;
-    document.getElementById("note-detail-title").textContent = title;
-    document.getElementById("note-detail-content").textContent = content || "(brak treści)";
-    document.getElementById("noteDetailModal").classList.add("active");
-}
-
-function closeNoteDetail() {
-    document.getElementById("noteDetailModal").classList.remove("active");
-    activeNoteId = null;
-}
-
-function handleDetailOverlayClick(e) {
-    if (e.target.id === "noteDetailModal") closeNoteDetail();
-}
-
-function deleteNote() {
-    if (!activeNoteId) return;
-    fetch(`/note/${activeNoteId}/delete/`, {
-        method: "POST",
-        headers: { "X-CSRFToken": CSRF_TOKEN }
-    })
-    .then(r => r.json())
-    .then(data => {
-        if (data.status === "ok") {
-            closeNoteDetail();
-            loadNotes();
-        }
-    });
-}
-
-function escapeHtml(str) {
-    return String(str)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#39;");
-}
-
-// ===== DZIENNY PASEK POSTĘPU =====
-document.addEventListener("DOMContentLoaded", function () {
-    const fill = document.querySelector(".day-progress-fill");
-    const pctText = document.getElementById("day-pct-text");
-    if (!fill) return;
-
-    const target = parseInt(fill.dataset.width || "0", 10);
-
-    // krótkie opóźnienie żeby przeglądarka zdążyła wyrenderować width: 0
-    setTimeout(() => {
-        fill.style.width = target + "%";
-    }, 120);
-
-    // licznik cyfr od 0 do target
-    const duration = 900; // ms
-    const startTime = performance.now();
-
-    function tick(now) {
-        const elapsed = now - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        // easing: easeOutCubic
-        const eased = 1 - Math.pow(1 - progress, 3);
-        const current = Math.round(eased * target);
-        if (pctText) pctText.textContent = current + "%";
-        if (progress < 1) requestAnimationFrame(tick);
-    }
-    requestAnimationFrame(tick);
-});
-
-// ===== MODAL ZADAŃ =====
-
-function openModal() {
-    document.getElementById("taskModal").classList.add("active");
-}
-function closeModal() {
-    document.getElementById("taskModal").classList.remove("active");
-}
-document.getElementById("taskModal").addEventListener("click", function(e) {
-    if (e.target.id === "taskModal") closeModal();
-});
-
-// ===== DYNAMICZNE POLA FORMULARZA =====
-document.addEventListener("DOMContentLoaded", function () {
-    const typeField = document.getElementById("id_task_type");
-    const weeklyField = document.getElementById("weekly-field");
-    const dateField = document.getElementById("date-field");
-
-    function toggleFields() {
-        if (typeField.value === "WEEKLY") {
-            weeklyField.classList.remove("hidden");
-            dateField.classList.add("hidden");
-        } else if (typeField.value === "DAILY") {
-            weeklyField.classList.add("hidden");
-            dateField.classList.add("hidden");
-        } else {
-            weeklyField.classList.add("hidden");
-            dateField.classList.remove("hidden");
-        }
-    }
-
-    typeField.addEventListener("change", toggleFields);
-    toggleFields();
-
-    // ===== FLATPICKR — wybór daty =====
-    flatpickr("#id_date", {
-        locale: "pl",
-        dateFormat: "d.m.Y",
-        minDate: "today",
-        disableMobile: false,
-        allowInput: false,
-        nextArrow: "›",
-        prevArrow: "‹",
-        onReady: function(_, __, fp) {
-            fp.calendarContainer.classList.add("habitly-cal");
-        }
-    });
-
-    // ===== ANIMACJA PASKA POSTĘPU =====
-    const fill = document.querySelector(".day-progress-fill");
-    if (fill) {
-        const target = fill.dataset.width || "0";
-        // krótkie opóźnienie — przeglądarka zdąży wyrenderować width:0
-        setTimeout(() => {
-            fill.style.transition = "width 0.85s cubic-bezier(0.34, 1.56, 0.64, 1)";
-            fill.style.width = target + "%";
-        }, 120);
-
-        // animacja licznika procentowego
-        const pctEl = document.getElementById("day-pct-text");
-        if (pctEl && parseInt(target) > 0) {
-            const end = parseInt(target);
-            const duration = 800;
-            const step = 16;
-            let current = 0;
-            const timer = setInterval(() => {
-                current = Math.min(current + Math.ceil(end / (duration / step)), end);
-                pctEl.textContent = current + "%";
-                if (current >= end) clearInterval(timer);
-            }, step);
-        }
-    }
-});
-</script>
-
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pl.js"></script>
-</body>
-</html>
+{% endblock %}

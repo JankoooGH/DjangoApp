@@ -1,149 +1,219 @@
-* {
-    box-sizing: border-box;
+.app {
+    display: flex;
+    min-height: 100vh;
+    padding-left: 280px;
+    justify-content: center;
 }
 
-body {
-    font-family: 'Segoe UI', Arial, sans-serif;
-    background: #f4f6fb;
-    margin: 0;
-    padding: 0;
-    height: 100vh;
+/*main*/
+
+.main {
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    gap: 24px;
+    padding: 48px 40px;
+    width: 100%;
+    max-width: 1000px;
 }
 
-/* header */
+.calendar {
+    flex: 1;
+}
+
+.task-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+    border-radius: var(--radius);
+    padding: 24px;
+    min-height: 200px;
+
+}
+
+/*calendar*/
+.cal-day {
+    min-height: 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 10px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+}
+
+.cal-weekday {
+    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted-foreground);
+    padding: 8px 0;
+}
+
+
+.cal-day:hover {
+    border-color: color-mix(in oklab, var(--primary) 50%, transparent);
+    background: color-mix(in oklab, var(--primary) 8%, transparent);
+}
+
+.cal-day.empty {
+    border: none;
+    cursor: default;
+    pointer-events: none;
+}
+
+.cal-day.today {
+    border-color: var(--primary);
+    background: color-mix(in oklab, var(--primary) 12%, transparent);
+}
+
+.calendar {
+    flex: 1;
+    border-radius: var(--radius);
+    padding: 24px;
+}
+
 .cal-header {
-    height: 50px;
-    background: #f7edde;
     display: flex;
     align-items: center;
-    padding: 0 20px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-    flex-shrink: 0;
+    justify-content: space-between;
+    margin-bottom: 20px;
 }
 
-.cal-header a {
-    text-decoration: none;
-    color: #4f46e5;
-    font-weight: 600;
-    font-size: 14px;
+.cal-header span {
+    font-size: var(--text-2xl);
+    font-weight: var(--font-weight-bold);
 }
 
-.cal-header h1 {
-    flex: 1;
-    text-align: center;
-    font-size: 18px;
-    color: #2c3e50;
-    margin: 0;
-}
-/* kontener kalendarza */
-#calendar {
-    flex: 1;
-    margin: 15px;
-    background: #ffffff;
-    padding: 15px;
-    border-radius: 16px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-    min-height: 0;
+.cal-header-nav {
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
-/* toolbar */
-.fc-toolbar {
-    margin-bottom: 10px !important;
+.cal-header button {
+    background: none;
+    border: none;
+    color: var(--foreground);
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-sm);
+    font-size: var(--text-base);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
 }
 
-.fc-toolbar-title {
-    font-size: 1.2rem !important;
-    color: #2c3e50;
+.cal-header button:hover {
+    background: var(--secondary);
+    border-color: var(--primary);
 }
 
-/* przyciski */
-.fc-button {
-    background: #4f46e5 !important;
-    border: none !important;
-    border-radius: 8px !important;
-    padding: 4px 10px !important;
-    transition: 0.2s;
+.cal-dot {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: color-mix(in oklab, var(--success) 25%, transparent);
+    color: var(--success);
+    font-size: 11px;
+    font-weight: 700;
+    margin-top: auto;
+    align-self: flex-end;
 }
 
-.fc-button:hover {
-    background: #4338ca !important;
+
+.glow-ring {
+    box-shadow: 0 0 0 1px var(--primary), 0 10px 40px -10px var(--primary);
 }
 
-.fc-button-active {
-    background: #312e81 !important;
+
+
+/* Lista zadań */
+
+.task-list > h3 {
+    text-transform: capitalize;
+    font-size: var(--text-lg);
 }
 
-/* dni tygodnia */
-.fc-col-header-cell {
-    background: #eef2ff;
-    color: #374151;
-    font-weight: 600;
-    padding: 6px 0;
-    border: none !important;
+.task-list > p {
+    font-size: var(--text-sm);
+    color: var(--muted-foreground);
 }
 
-/* komórki dni */
-.fc-daygrid-day {
-    border: none !important;
-    padding: 3px;
-    background: transparent;
+
+.habit-card {
+  background: color-mix(in oklab, var(--card) 70%, transparent);
+  margin-bottom: 10px;
+  backdrop-filter: blur(14px);
+  border: 1px solid color-mix(in oklab, var(--border) 70%, transparent);
+  border-radius: calc(var(--radius) + 4px);
+  padding: calc(var(--spacing) * 3);;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--spacing) * 3);
+  transition: border-color 0.2s, background 0.2s;
+  cursor: pointer;
 }
 
-/* numer dnia */
-.fc-daygrid-day-number {
-    color: #6b7280;
-    padding: 4px;
-    font-size: 0.85rem;
+.habit-card:hover {
+  border-color: color-mix(in oklab, var(--primary) 40%, transparent);
+  background: color-mix(in oklab, var(--card) 85%, transparent);
 }
 
-/* box dnia */
-.fc-daygrid-day-frame {
-    background: white;
-    border: 1px solid #e5e7eb;
-    border-radius: 6px;
-    min-height: 70px !important;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-    transition: 0.2s;
+/* Colored left accent bar */
+.habit-card__accent {
+  width: calc(var(--spacing) * 1);
+  height: calc(var(--spacing) * 10);
+  border-radius: 99px;
+  flex-shrink: 0;
 }
 
-.fc-daygrid-day-frame:hover {
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    background-color: #fafafa;
+.habit-card__body { flex: 1; min-width: 0; }
+
+
+.habit-card__title {
+  font-family: "Sora", ui-sans-serif, system-ui, sans-serif;
+  font-weight: var(--font-weight-medium);
+  font-size: var(--text-base);
+  color: var(--foreground);
 }
 
-/* dzisiejszy dzień */
-.fc-day-today {
-    background: transparent !important;
+.habit-card__xp {
+    color: var(--primary);
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--text-xs);
+}
+.habit-card__streak {
+    display: flex;
+    align-items: center;
+    gap: 4px;
 }
 
-.fc-day-today .fc-daygrid-day-frame {
-    border: 1px solid #6366f1;
-    background: #eef2ff;
+/* Badge */
+
+
+
+.badge--done {
+    background: color-mix(in oklab, var(--success) 20%, transparent);
+    color: var(--success);
 }
 
-/* wydarzenia */
-.fc-event {
-    background: linear-gradient(135deg, #6366f1, #4f46e5);
-    border: none !important;
-    border-radius: 6px;
-    padding: 1px 5px;
-    font-size: 0.75rem;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.fc-event:hover {
-    transform: scale(1.03);
-    transition: 0.2s;
-}
-
-/* siatka */
-.fc-scrollgrid {
-    border: none !important;
-}
-
-.fc-scroller {
-    overflow: auto !important;
+.badge--pending {
+    background: color-mix(in oklab, var(--muted-foreground) 15%, transparent);
+    color: var(--muted-foreground);
 }

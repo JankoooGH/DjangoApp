@@ -17,6 +17,8 @@ class Task(models.Model):
     ]
 
     title = models.CharField(max_length=200)
+    description = models.TextField(blank=True, default='')
+    color = models.CharField(max_length=20, default='indigo')
     task_type = models.CharField(max_length=10, choices=TASK_TYPES, default=TASK_ONCE)
 
     # ONCE

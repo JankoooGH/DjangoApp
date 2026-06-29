@@ -1,0 +1,269 @@
+@import url("https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Manrope:wght@300;400;500;600;700&display=swap");
+
+/* ── Tokens ─────────────────────────────────────────── */
+:root {
+  --radius: 0.875rem;
+  --background:        oklch(0.13 0.04 280);
+  --foreground:        oklch(0.97 0.01 270);
+  --card:              oklch(0.18 0.05 275);
+  --card-foreground:   oklch(0.97 0.01 270);
+  --primary:           oklch(0.62 0.22 275);
+  --primary-foreground:oklch(0.98 0.01 270);
+  --glow:              oklch(0.75 0.2 290);
+  --secondary:         oklch(0.24 0.07 275);
+  --muted:             oklch(0.22 0.05 275);
+  --muted-foreground:  oklch(0.7 0.04 270);
+  --accent:            oklch(0.6 0.24 305);
+  --border:            oklch(0.28 0.06 275);
+  --input:             oklch(0.24 0.06 275);
+  --ring:              oklch(0.62 0.22 275);
+  --destructive:       oklch(0.62 0.24 25);
+}
+
+/* ── Reset / base ────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  background-color: var(--background);
+  color: var(--foreground);
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  /* Ambient blobs — same as the original theme */
+  background-image:
+    radial-gradient(circle at 15% 10%, oklch(0.25 0.12 280 / 0.6), transparent 50%),
+    radial-gradient(circle at 85% 90%, oklch(0.3 0.18 305 / 0.45), transparent 55%);
+  background-attachment: fixed;
+}
+
+h1, h2, h3 {
+  font-family: "Sora", ui-sans-serif, system-ui, sans-serif;
+  letter-spacing: -0.02em;
+}
+
+/* ── Logo ────────────────────────────────────────────── */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 28px;
+  animation: fade-down 0.45s ease both;
+}
+
+.logo__icon {
+  width: 38px;
+  height: 38px;
+  border-radius: calc(var(--radius) - 2px);
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  /* glow-ring */
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, var(--primary) 40%, transparent),
+    0 10px 40px -10px color-mix(in oklab, var(--primary) 60%, transparent);
+}
+
+.logo__name {
+  font-family: "Sora", ui-sans-serif, system-ui, sans-serif;
+  font-weight: 800;
+  font-size: 18px;
+  letter-spacing: 0.04em;
+  color: var(--foreground);
+}
+
+/* ── Card ────────────────────────────────────────────── */
+.card {
+  /* glass utility */
+  background: color-mix(in oklab, var(--card) 70%, transparent);
+  backdrop-filter: blur(14px);
+  border: 1px solid color-mix(in oklab, var(--border) 80%, transparent);
+
+  border-radius: calc(var(--radius) + 8px);   /* radius-2xl */
+  padding: 36px 40px;
+  width: 100%;
+  max-width: 440px;
+  box-shadow:
+    0 25px 60px oklch(0 0 0 / 0.5),
+    0 0 0 1px color-mix(in oklab, var(--primary) 15%, transparent);
+  animation: fade-up 0.45s ease both 0.1s;
+}
+
+.card__title {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--foreground);
+  margin-bottom: 6px;
+}
+
+.card__subtitle {
+  font-size: 14px;
+  color: var(--muted-foreground);
+  margin-bottom: 28px;
+}
+
+/* ── Google button ───────────────────────────────────── */
+.btn-google {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: transparent;
+  border: 1px solid color-mix(in oklab, var(--border) 80%, transparent);
+  border-radius: var(--radius);
+  padding: 11px 16px;
+  color: var(--muted-foreground);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s, color 0.2s;
+  margin-bottom: 24px;
+}
+.btn-google:hover {
+  border-color: color-mix(in oklab, var(--border) 160%, transparent);
+  background: color-mix(in oklab, var(--secondary) 40%, transparent);
+  color: var(--foreground);
+}
+
+/* ── Divider ─────────────────────────────────────────── */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.divider__line {
+  flex: 1;
+  height: 1px;
+  background: color-mix(in oklab, var(--border) 60%, transparent);
+}
+.divider__text {
+  font-size: 12px;
+  color: color-mix(in oklab, var(--muted-foreground) 60%, transparent);
+}
+
+/* ── Form ────────────────────────────────────────────── */
+.field {
+  margin-bottom: 16px;
+}
+
+.field label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted-foreground);
+  margin-bottom: 7px;
+}
+
+/* Target both explicit inputs and Django-rendered widgets */
+.field input,
+input[type="text"],
+input[type="password"],
+input[type="email"] {
+  width: 100%;
+  background: var(--input);
+  border: 1px solid color-mix(in oklab, var(--border) 70%, transparent);
+  border-radius: calc(var(--radius) - 2px);
+  padding: 10px 14px;
+  color: var(--foreground);
+  font-family: inherit;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.field input:focus,
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="email"]:focus {
+  border-color: color-mix(in oklab, var(--ring) 70%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 20%, transparent);
+}
+.field input::placeholder,
+input[type="text"]::placeholder,
+input[type="password"]::placeholder,
+input[type="email"]::placeholder {
+  color: color-mix(in oklab, var(--muted-foreground) 40%, transparent);
+}
+
+/* ── Submit button ───────────────────────────────────── */
+.btn-submit {
+  width: 100%;
+  padding: 12px;
+  /* gradient-primary */
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  border: none;
+  border-radius: var(--radius);
+  color: var(--primary-foreground);
+  font-family: "Sora", ui-sans-serif, system-ui, sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  margin-top: 8px;
+  /* glow-ring */
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, var(--primary) 40%, transparent),
+    0 10px 40px -10px color-mix(in oklab, var(--primary) 60%, transparent);
+  transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+}
+.btn-submit:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, var(--primary) 50%, transparent),
+    0 14px 48px -8px color-mix(in oklab, var(--primary) 70%, transparent);
+}
+.btn-submit:active { transform: translateY(0); }
+
+/* ── Switch link ─────────────────────────────────────── */
+.switch-text {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 13px;
+  color: var(--muted-foreground);
+}
+.switch-text a {
+  /* text-gradient */
+  background: linear-gradient(135deg, var(--glow), var(--accent));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-weight: 600;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+.switch-text a:hover { opacity: 0.8; }
+
+/* ── Error messages ──────────────────────────────────── */
+.error-field {
+  font-size: 12px;
+  color: var(--destructive);
+  margin-top: -10px;
+  margin-bottom: 10px;
+}
+.error-global {
+  background: color-mix(in oklab, var(--destructive) 12%, transparent);
+  border: 1px solid color-mix(in oklab, var(--destructive) 30%, transparent);
+  border-radius: calc(var(--radius) - 2px);
+  color: var(--destructive);
+  font-size: 13px;
+  text-align: center;
+  padding: 10px 14px;
+  margin-bottom: 16px;
+}
+
+/* ── Animations ──────────────────────────────────────── */
+@keyframes fade-down {
+  from { opacity: 0; transform: translateY(-14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
