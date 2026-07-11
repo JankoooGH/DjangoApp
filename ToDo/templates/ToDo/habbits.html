@@ -53,7 +53,12 @@
           {% endif %}
 
           <div class="habit-card__meta">
-            <span class="habit-card__xp">+.. XP</span>
+            <span class="habit-card__xp">
+                {% if task.task_type == 'ONCE' %}+10 XP
+                {% elif task.task_type == 'DAILY' %}+15 XP
+                {% elif task.task_type == 'WEEKLY' %}+25 XP
+                {% endif %}
+            </span>
             <span class="habit-card__streak">
               🔥 streak:
               {% if task.task_type == 'DAILY' %}

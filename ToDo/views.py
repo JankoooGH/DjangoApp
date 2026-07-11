@@ -79,6 +79,11 @@ def home(request):
     tasks_done = sum(1 for t in tasks_list if t.is_done_today())
     day_progress = int((tasks_done / tasks_total) * 100) if tasks_total > 0 else 0
 
+    longest_streak_task = Task.objects.filter(
+        user=request.user, task_type=Task.TASK_DAILY
+    ).order_by('-streak').first()
+    longest_streak = longest_streak_task.streak if longest_streak_task else 0
+
     context = {
         'tasks': tasks_list,
         'form': form,
@@ -91,6 +96,7 @@ def home(request):
         'tasks_done': tasks_done,
         'day_progress': day_progress,
         'today': timezone.localdate(),
+        'longest_streak': longest_streak,
     }
     return render(request, 'ToDo/main.html', context)
 
@@ -106,7 +112,7 @@ def delete_task(request, task_id):
         return redirect('habbits')
 
 def toggle_task(request, task_id):
-    task = get_object_or_404(Task, pk=task_id)
+    task = get_object_or_404(Task, pk=task_id, user=request.user)
     profile, _ = UserProfile.objects.get_or_create(user=request.user)
 
     if task.task_type == Task.TASK_ONCE:
@@ -178,9 +184,6 @@ def toggle_task(request, task_id):
         'streak': task.streak if task.task_type == Task.TASK_DAILY else None,
         'weekly_target': task.weekly_target,
     })
-
-def habbits(request):
-    return render(request, 'ToDo/habbits.html')
 
 def main(request):
     return render(request, 'ToDo/main.html')
@@ -310,10 +313,23 @@ def note_delete(request, note_id):
 @login_required(login_url='auth')
 def profile_view(request):
     profile, _ = UserProfile.objects.get_or_create(user=request.user)
-    total_tasks = Task.objects.filter(user=request.user, completed=True).count()
-    longest_streak = Task.objects.filter(
+
+    longest_streak_task = Task.objects.filter(
         user=request.user, task_type=Task.TASK_DAILY
     ).order_by('-streak').first()
+
+    daily_count  = Task.objects.filter(user=request.user, task_type=Task.TASK_DAILY).count()
+    weekly_count = Task.objects.filter(user=request.user, task_type=Task.TASK_WEEKLY).count()
+    once_count   = Task.objects.filter(user=request.user, task_type=Task.TASK_ONCE).count()
+    total_all    = daily_count + weekly_count + once_count
+
+    total_tasks = TaskLog.objects.filter(
+        task__user=request.user, completed=True
+    ).count()
+
+    active_days = TaskLog.objects.filter(
+        task__user=request.user, completed=True
+    ).values('date').distinct().count()
 
     context = {
         'profile': profile,
@@ -322,10 +338,14 @@ def profile_view(request):
         'progress': profile.rank_progress_percent(),
         'xp_to_next': profile.xp_to_next_rank(),
         'total_tasks': total_tasks,
-        'longest_streak': longest_streak.streak if longest_streak else 0,
+        'longest_streak': longest_streak_task.streak if longest_streak_task else 0,
+        'daily_count': daily_count,
+        'weekly_count': weekly_count,
+        'once_count': once_count,
+        'total_all': total_all,
+        'active_days': active_days,
     }
     return render(request, 'ToDo/profile.html', context)
-
 
 @login_required(login_url='auth')
 def habbits(request):

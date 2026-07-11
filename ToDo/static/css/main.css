@@ -653,15 +653,9 @@ button {
     border-radius: 99px;
 }
 
-.badge-type {
-    background: color-mix(in oklab, var(--warning) 20%, transparent);
-    color: var(--warning);
-}
-
-.badge-weekly {
-    background: color-mix(in oklab, var(--primary) 20%, transparent);
-    color: var(--primary);
-}
+.badge--daily  { background: color-mix(in oklab, var(--primary) 20%, transparent); color: var(--primary); }
+.badge--weekly { background: color-mix(in oklab, var(--success) 20%, transparent); color: var(--success); }
+.badge--once   { background: color-mix(in oklab, var(--warning) 20%, transparent); color: var(--warning); }
 
 .task-right {
     display: flex;

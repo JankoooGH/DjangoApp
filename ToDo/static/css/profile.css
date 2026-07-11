@@ -1,0 +1,206 @@
+.app {
+    padding-left: 280px;
+    justify-content: center;
+}
+
+.profile-main {
+    padding: 40px 48px;
+    max-width: 900px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.profile-page-title {
+    font-size: 32px;
+    font-weight: 800;
+    margin-bottom: 8px;
+}
+
+.profile-section-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--foreground);
+    margin-top: 8px;
+}
+
+/* ── Header card ─────────────────────────────────── */
+.profile-header {
+    border-radius: calc(var(--radius) + 4px);
+    padding: 28px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.profile-header__left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.profile-avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    flex-shrink: 0;
+    box-shadow: 0 0 0 1px color-mix(in oklab, var(--primary) 40%, transparent),
+                0 8px 24px -8px color-mix(in oklab, var(--primary) 60%, transparent);
+}
+
+.profile-username {
+    font-family: 'Sora', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--foreground);
+    margin-bottom: 6px;
+}
+
+.profile-meta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.profile-meta__rank {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--primary);
+    background: color-mix(in oklab, var(--primary) 12%, transparent);
+    border: 1px solid color-mix(in oklab, var(--primary) 25%, transparent);
+    border-radius: 99px;
+    padding: 3px 12px;
+}
+
+.profile-meta__joined {
+    font-size: 13px;
+    color: var(--muted-foreground);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* XP bar */
+.profile-xp-section { display: flex; flex-direction: column; gap: 6px; }
+
+.profile-xp-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted-foreground);
+}
+
+.profile-xp-track {
+    height: 8px;
+    background: var(--muted);
+    border-radius: 99px;
+    overflow: hidden;
+}
+
+.profile-xp-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+    border-radius: 99px;
+    transition: width 0.6s ease;
+}
+
+.profile-xp-hint {
+    font-size: 11px;
+    color: var(--muted-foreground);
+}
+
+/* ── Statystyki ──────────────────────────────────── */
+.profile-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+}
+
+.profile-stat-card {
+    border-radius: calc(var(--radius) + 4px);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.profile-stat-card i {
+    font-size: 18px;
+    color: var(--primary);
+    margin-bottom: 4px;
+}
+
+.profile-stat-card__value {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--foreground);
+    line-height: 1;
+}
+
+.profile-stat-card__label {
+    font-size: 12px;
+    color: var(--muted-foreground);
+}
+
+/* ── Szczegóły nawyków ───────────────────────────── */
+.profile-habit-types {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.profile-type-card {
+    border-radius: calc(var(--radius) + 4px);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.profile-type-card__value {
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--foreground);
+}
+
+/* ── Aktywność ───────────────────────────────────── */
+.profile-activity {
+    border-radius: calc(var(--radius) + 4px);
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 15px;
+    color: var(--muted-foreground);
+}
+
+.profile-activity i {
+    font-size: 18px;
+    color: var(--primary);
+}
+
+.profile-activity strong {
+    color: var(--foreground);
+    font-weight: 700;
+}
+
+/* Badge (te same co w habbits.css) */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 12px;
+    border-radius: 99px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}

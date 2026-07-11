@@ -1,16 +1,93 @@
 {% extends 'ToDo/base.html' %}
 {% load static %}
 
-{% block title %}Dashboard — Habitly{% endblock %}
+{% block title %}Profil — Habitly{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/profile.css' %}">
 {% endblock %}
 
-{% block extra_js %}
-<script src="{% static 'js/profile.js' %}"></script>
-{% endblock %}
-
 {% block content %}
+<main class="profile-main">
 
+    <h1 class="profile-page-title">Profil</h1>
+
+    <!-- ── Header card ───────────────────────────────── -->
+    <div class="profile-header glass">
+        <div class="profile-header__left">
+            <div class="profile-avatar">{{ rank_icon }}</div>
+            <div>
+                <div class="profile-username">{{ request.user.username }}</div>
+                <div class="profile-meta">
+                    <span class="profile-meta__rank">{{ rank_icon }} {{ rank_name }}</span>
+                    <span class="profile-meta__joined">
+                        <i class="fa-regular fa-calendar"></i>
+                        Dołączył {{ request.user.date_joined|date:"j F Y" }}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="profile-xp-section">
+            <div class="profile-xp-labels">
+                <span>{{ profile.xp }} XP</span>
+                <span>{{ profile.xp|add:xp_to_next }} XP — następna ranga</span>
+            </div>
+            <div class="profile-xp-track">
+                <div class="profile-xp-fill" style="width: {{ progress }}%"></div>
+            </div>
+            <span class="profile-xp-hint">{{ xp_to_next }} XP do następnej rangi</span>
+        </div>
+    </div>
+
+    <!-- ── Statystyki ─────────────────────────────────── -->
+    <h2 class="profile-section-title">Statystyki</h2>
+    <div class="profile-stats">
+        <div class="profile-stat-card glass">
+            <i class="fa-solid fa-list"></i>
+            <div class="profile-stat-card__value">{{ total_all }}</div>
+            <div class="profile-stat-card__label">Wszystkich nawyków</div>
+        </div>
+        <div class="profile-stat-card glass">
+            <i class="fa-solid fa-bolt"></i>
+            <div class="profile-stat-card__value">{{ profile.xp }}</div>
+            <div class="profile-stat-card__label">Łącznie XP</div>
+        </div>
+        <div class="profile-stat-card glass">
+            <i class="fa-solid fa-fire"></i>
+            <div class="profile-stat-card__value">{{ longest_streak }}</div>
+            <div class="profile-stat-card__label">Najlepszy streak</div>
+        </div>
+        <div class="profile-stat-card glass">
+            <i class="fa-solid fa-check"></i>
+            <div class="profile-stat-card__value">{{ total_tasks }}</div>
+            <div class="profile-stat-card__label">Ukończone zadania</div>
+        </div>
+    </div>
+
+    <!-- ── Szczegóły nawyków ──────────────────────────── -->
+    <h2 class="profile-section-title">Szczegóły nawyków</h2>
+    <div class="profile-habit-types">
+        <div class="profile-type-card glass">
+            <div class="profile-type-card__value">{{ daily_count }}</div>
+            <span class="badge badge--daily">Codzienne</span>
+        </div>
+        <div class="profile-type-card glass">
+            <div class="profile-type-card__value">{{ weekly_count }}</div>
+            <span class="badge badge--weekly">Tygodniowe</span>
+        </div>
+        <div class="profile-type-card glass">
+            <div class="profile-type-card__value">{{ once_count }}</div>
+            <span class="badge badge--once">Jednorazowe</span>
+        </div>
+    </div>
+
+    <!-- ── Aktywność ──────────────────────────────────── -->
+    <h2 class="profile-section-title">Aktywność</h2>
+    <div class="profile-activity glass">
+        <i class="fa-regular fa-calendar-check"></i>
+        <span>Dni z aktywnością: <strong>{{ active_days }}</strong></span>
+    </div>
+
+</main>
 {% endblock %}

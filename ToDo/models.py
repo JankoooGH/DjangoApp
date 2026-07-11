@@ -11,9 +11,9 @@ class Task(models.Model):
     TASK_WEEKLY = "WEEKLY"
     TASK_ONCE = "ONCE"
     TASK_TYPES = [
-        (TASK_DAILY, "Daily"),
-        (TASK_WEEKLY, "Weekly"),
-        (TASK_ONCE, "Once"),
+        (TASK_DAILY, "Codzienne"),
+        (TASK_WEEKLY, "Tygodniowe"),
+        (TASK_ONCE, "Jednorazowe"),
     ]
 
     title = models.CharField(max_length=200)

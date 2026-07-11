@@ -130,9 +130,6 @@
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
-.badge--weekly  { background: color-mix(in oklab, var(--accent) 20%, transparent);  color: var(--accent); }
-.badge--daily   { background: color-mix(in oklab, var(--primary) 20%, transparent); color: var(--primary); }
-.badge--once    { background: color-mix(in oklab, var(--muted-foreground) 15%, transparent); color: var(--muted-foreground); }
 
 /* Delete button */
 .btn-delete {

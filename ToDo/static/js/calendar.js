@@ -115,8 +115,7 @@ function loadDayData(dateStr) {
                     <div class="habit-card__accent accent-${task.color}"></div>
                     <div class="habit-card__body">
                         <div class="habit-card__title">${task.title}</div>
-                        <div class="habit-card__xp">+${task.xp} XP · ${task.type.toLowerCase()}</div>
-                    </div>
+                        <div class="habit-card__xp">+${task.xp} XP · ${{ 'DAILY': 'Codzienne', 'WEEKLY': 'Tygodniowe', 'ONCE': 'Jednorazowe' }[task.type]}</div>                    </div>
                     <span class="badge">${task.completed 
                         ? `<span class="badge badge--done">✓ ukończone</span>` 
                         : `<span class="badge badge--pending">oczekuje</span>`}
