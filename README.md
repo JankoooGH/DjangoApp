@@ -103,6 +103,8 @@ Decyzja o budowie frontendu bez Bootstrap/Tailwind była świadoma — system st
 ToDoDjango/
 ├── manage.py
 ├── requirements.txt
+├── Dockerfile
+├── docker-compose.yml
 ├── ToDoDjango/          # konfiguracja projektu (settings, urls główne)
 └── ToDo/                # główna aplikacja
     ├── models.py        # Task, TaskLog, TaskNote, UserProfile
@@ -120,12 +122,25 @@ ToDoDjango/
 
 ## Uruchomienie lokalne
 
+### Opcja 1 — Docker (zalecana, nie wymaga Pythona)
+
+Wymagania: [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+
 ```bash
 git clone <repo>
-cd ToDoDjango
+cd DjangoApp
+docker compose up --build
+```
+
+Aplikacja dostępna pod `http://localhost:8000`
+
+### Opcja 2 — Python lokalnie
+
+```bash
+git clone <repo>
+cd DjangoApp
 pip install -r requirements.txt
 python manage.py migrate
-python manage.py createsuperuser
 python manage.py runserver
 ```
 
@@ -151,4 +166,4 @@ Artefakty przygotowywane równolegle:
 
 ---
 
-*Projekt realizowany jako praca inżynierska. Autor: [imię i nazwisko], [uczelnia], [rok akademicki]*
+*Projekt realizowany jako praca inżynierska.*
