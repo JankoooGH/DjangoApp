@@ -1,0 +1,11 @@
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    environment:
+      - DEBUG=1
+      - DJANGO_SETTINGS_MODULE=myproject.settings
+    restart: unless-stopped
