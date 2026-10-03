@@ -9,10 +9,13 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path('habbits/', views.habbits, name='habbits'),
     path('delete/<int:task_id>/', views.delete_task, name='delete_task'),
+    path('edit/<int:task_id>/', views.edit_task, name='edit_task'),
+    path('note/<int:note_id>/edit/', views.note_edit, name='note_edit'),
     path('toggle/<int:task_id>/', views.toggle_task, name='toggle_task'),
     path('note/<int:task_id>/list/', views.note_list, name='note_list'),
     path('note/<int:task_id>/save/', views.note_save, name='note_save'),
     path('note/<int:note_id>/delete/', views.note_delete, name='note_delete'),
     path('calendar/month/', views.calendar_month, name='calendar_month'),
     path('calendar/day/', views.calendar_day, name='calendar_day'),
+
 ]

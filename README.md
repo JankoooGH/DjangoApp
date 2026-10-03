@@ -137,7 +137,7 @@ Aplikacja dostępna pod `http://localhost:8000`
 ### Opcja 2 — Python lokalnie
 
 ```bash
-git clone <repo>
+git clone https://github.com/JankoooGH/DjangoApp.git
 cd DjangoApp
 pip install -r requirements.txt
 python manage.py migrate

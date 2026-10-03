@@ -111,6 +111,18 @@ def delete_task(request, task_id):
         task.delete()
         return redirect('habbits')
 
+@login_required(login_url='auth')
+def edit_task(request, task_id):
+
+    task = get_object_or_404(Task, pk=task_id, user=request.user)
+
+    if request.method == "POST":
+        form = TaskForm(request.POST, instance=task)
+        if form.is_valid():
+            form.save()
+
+    return redirect('habbits')
+
 def toggle_task(request, task_id):
     task = get_object_or_404(Task, pk=task_id, user=request.user)
     profile, _ = UserProfile.objects.get_or_create(user=request.user)
@@ -272,10 +284,28 @@ def note_list(request, task_id):
     """GET — zwraca listę notatek dla danego zadania."""
     task = get_object_or_404(Task, pk=task_id, user=request.user)
     notes = list(task.notes.values('id', 'title', 'content', 'created_at'))
-    # serializer daty
     for n in notes:
-        n['created_at'] = n['created_at'].strftime('%d.%m.%Y %H:%M')
+        n['created_at'] = n['created_at'].isoformat()   # <-- zmiana
     return JsonResponse({'notes': notes})
+
+
+@login_required(login_url='auth')
+def note_edit(request, note_id):
+    """POST — edytuje istniejącą notatkę."""
+    if request.method != 'POST':
+        return JsonResponse({'status': 'error', 'msg': 'Method not allowed'}, status=405)
+
+    note = get_object_or_404(TaskNote, pk=note_id, task__user=request.user)
+    title = request.POST.get('title', '').strip()
+    content = request.POST.get('content', '').strip()
+
+    if not title:
+        return JsonResponse({'status': 'error', 'msg': 'Tytuł jest wymagany'}, status=400)
+
+    note.title = title
+    note.content = content
+    note.save()
+    return JsonResponse({'status': 'ok'})
 
 
 @login_required(login_url='auth')
