@@ -10,6 +10,17 @@ from django.db.models import Count
 from django.utils.dateparse import parse_date
 
 
+def tasks_for_day(user, day):
+    return Task.objects.filter(
+        user=user
+    ).filter(
+        Q(task_type=Task.TASK_DAILY) |
+        Q(task_type=Task.TASK_WEEKLY) |
+        Q(task_type=Task.TASK_ONCE, date=day) |
+        Q(task_type=Task.TASK_TODO, completed=False) |
+        Q(task_type=Task.TASK_TODO, completed_date=day)
+    )
+
 def auth_view(request):
     if request.user.is_authenticated:
         return redirect('home')
@@ -58,13 +69,7 @@ def home(request):
     form = TaskForm()
     profile, _ = UserProfile.objects.get_or_create(user=request.user)
 
-    tasks = Task.objects.filter(
-        user=request.user
-    ).filter(
-        Q(task_type=Task.TASK_DAILY) |
-        Q(task_type=Task.TASK_WEEKLY) |
-        Q(task_type=Task.TASK_ONCE, date=today)
-    )
+    tasks = tasks_for_day(request.user, today)
 
     if request.method == "POST":
         form = TaskForm(request.POST)
@@ -127,6 +132,8 @@ def toggle_task(request, task_id):
     task = get_object_or_404(Task, pk=task_id, user=request.user)
     profile, _ = UserProfile.objects.get_or_create(user=request.user)
 
+    # ONCE
+
     if task.task_type == Task.TASK_ONCE:
         if not task.completed:
             task.once_task()
@@ -138,6 +145,8 @@ def toggle_task(request, task_id):
             profile.xp = max(0, profile.xp - 10)
             TaskLog.objects.filter(task=task, date=task.date).delete()
         profile.save()
+
+    # DAILY
 
     elif task.task_type == Task.TASK_DAILY:
         today = timezone.localdate()
@@ -157,6 +166,8 @@ def toggle_task(request, task_id):
             TaskLog.objects.filter(task=task, date=today).delete()
         profile.save()
 
+    # WEEKLY
+
     elif task.task_type == Task.TASK_WEEKLY:
         was_done = task.is_done_today()
         task.weekly_task()
@@ -166,13 +177,21 @@ def toggle_task(request, task_id):
             profile.xp = max(0, profile.xp - 25)
         profile.save()
 
-    all_tasks = list(Task.objects.filter(
-        user=request.user
-    ).filter(
-        Q(task_type=Task.TASK_DAILY) |
-        Q(task_type=Task.TASK_WEEKLY) |
-        Q(task_type=Task.TASK_ONCE, date=timezone.localdate())
-    ))
+    # CLASSIC
+
+    elif task.task_type == Task.TASK_TODO:
+        today = timezone.localdate()
+        was_done = task.completed
+        task.todo_task()
+        if not was_done:
+            profile.xp += 10
+            TaskLog.objects.get_or_create(task=task, date=today, defaults={"completed": True})
+        else:
+            profile.xp = max(0, profile.xp - 10)
+            TaskLog.objects.filter(task=task, date=today).delete()
+        profile.save()
+
+    all_tasks = list(tasks_for_day(request.user, timezone.localdate()))
     tasks_total = len(all_tasks)
     tasks_done = sum(1 for t in all_tasks if t.is_done_today())
     day_progress = int((tasks_done / tasks_total) * 100) if tasks_total > 0 else 0
@@ -383,11 +402,8 @@ def habbits(request):
     profile, _ = UserProfile.objects.get_or_create(user=request.user)
     form = TaskForm()
 
-    tasks = Task.objects.filter(user=request.user).filter(
-        Q(task_type=Task.TASK_DAILY) |
-        Q(task_type=Task.TASK_WEEKLY) |
-        Q(task_type=Task.TASK_ONCE, date=today)
-    )
+    tasks = tasks_for_day(request.user, today)
+    all_tasks = list(tasks_for_day(request.user, timezone.localdate()))
 
     if request.method == 'POST':
         form = TaskForm(request.POST)

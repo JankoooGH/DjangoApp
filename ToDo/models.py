@@ -10,10 +10,12 @@ class Task(models.Model):
     TASK_DAILY = "DAILY"
     TASK_WEEKLY = "WEEKLY"
     TASK_ONCE = "ONCE"
+    TASK_TODO = "TODO"
     TASK_TYPES = [
         (TASK_DAILY, "Codzienne"),
         (TASK_WEEKLY, "Tygodniowe"),
         (TASK_ONCE, "Jednorazowe"),
+        (TASK_TODO, "Do zrobienia"),
     ]
 
     title = models.CharField(max_length=200)
@@ -21,9 +23,14 @@ class Task(models.Model):
     color = models.CharField(max_length=20, default='indigo')
     task_type = models.CharField(max_length=10, choices=TASK_TYPES, default=TASK_ONCE)
 
+
+
     # ONCE
     date = models.DateField(null=True, blank=True)
     completed = models.BooleanField(default=False)
+
+    # CLASSIC
+    completed_date = models.DateField(null=True, blank=True)
 
     # DAILY
     last_completed = models.DateField(null=True, blank=True)
@@ -37,6 +44,9 @@ class Task(models.Model):
     def is_done_today(self):
         today = timezone.localdate()
 
+        if self.task_type == self.TASK_TODO:
+            return self.completed
+
         if self.task_type == self.TASK_ONCE:
             return self.completed
 
@@ -47,6 +57,17 @@ class Task(models.Model):
             return self.logs.filter(date=today, completed=True).exists()
 
         return False
+
+    def todo_task(self):
+        today = timezone.localdate()
+        if not self.completed:
+            self.completed = True
+            self.completed_date = today
+        else:
+            self.completed = False
+            self.completed_date = None
+        self.save()
+
 
     def once_task(self):
         if self.completed:
